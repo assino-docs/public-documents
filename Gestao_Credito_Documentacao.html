@@ -1,0 +1,634 @@
+<title>Gestão de Crédito · Documentação</title>
+<meta name="description" content="Documentação do dashboard Gestão de Crédito: visuais das páginas Crédito e Comercial, medidas DAX e características das bases de dados.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:        #EEEFE6;
+    --card:         #FBFBF4;
+    --ink:          #22271F;
+    --muted:        #6C7266;
+    --border:       #D9D9C9;
+    --border-soft:  #E4E4D6;
+
+    --credito:      #1F6B4F;
+    --credito-soft: #E3EFE8;
+    --comercial:    #A9752B;
+    --comercial-soft:#F3E9D6;
+
+    --warn:         #9C4B3D;
+    --warn-soft:    #F3E3DE;
+    --ok-soft:      #E3EFE8;
+
+    --fato:         #3D6A8A;
+    --fato-soft:    #E1EAF0;
+    --dim:          #7A5A96;
+    --dim-soft:     #EAE3F0;
+    --util:         #7D7A6A;
+    --util-soft:    #EBEAE1;
+
+    --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    --sans:  'Segoe UI', system-ui, -apple-system, sans-serif;
+    --mono:  ui-monospace, 'Cascadia Code', Consolas, 'SFMono-Regular', monospace;
+
+    --sidebar-w: 236px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:        #15170F;
+      --card:         #1D2117;
+      --ink:          #E9E7D8;
+      --muted:        #9AA08D;
+      --border:       #333729;
+      --border-soft:  #262A1F;
+
+      --credito:      #4FBF90;
+      --credito-soft: rgba(79,191,144,.12);
+      --comercial:    #DDAC5C;
+      --comercial-soft:rgba(221,172,92,.12);
+
+      --warn:         #D6907C;
+      --warn-soft:    rgba(214,144,124,.14);
+      --ok-soft:      rgba(79,191,144,.12);
+
+      --fato:         #74A2C4;
+      --fato-soft:    rgba(116,162,196,.14);
+      --dim:          #B79AD1;
+      --dim-soft:     rgba(183,154,209,.14);
+      --util:         #A6A38F;
+      --util-soft:    rgba(166,163,143,.14);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:        #15170F;
+    --card:         #1D2117;
+    --ink:          #E9E7D8;
+    --muted:        #9AA08D;
+    --border:       #333729;
+    --border-soft:  #262A1F;
+    --credito:      #4FBF90;
+    --credito-soft: rgba(79,191,144,.12);
+    --comercial:    #DDAC5C;
+    --comercial-soft:rgba(221,172,92,.12);
+    --warn:         #D6907C;
+    --warn-soft:    rgba(214,144,124,.14);
+    --ok-soft:      rgba(79,191,144,.12);
+    --fato:         #74A2C4;
+    --fato-soft:    rgba(116,162,196,.14);
+    --dim:          #B79AD1;
+    --dim-soft:     rgba(183,154,209,.14);
+    --util:         #A6A38F;
+    --util-soft:    rgba(166,163,143,.14);
+  }
+  :root[data-theme="light"] {
+    --paper:        #EEEFE6;
+    --card:         #FBFBF4;
+    --ink:          #22271F;
+    --muted:        #6C7266;
+    --border:       #D9D9C9;
+    --border-soft:  #E4E4D6;
+    --credito:      #1F6B4F;
+    --credito-soft: #E3EFE8;
+    --comercial:    #A9752B;
+    --comercial-soft:#F3E9D6;
+    --warn:         #9C4B3D;
+    --warn-soft:    #F3E3DE;
+    --ok-soft:      #E3EFE8;
+    --fato:         #3D6A8A;
+    --fato-soft:    #E1EAF0;
+    --dim:          #7A5A96;
+    --dim-soft:     #EAE3F0;
+    --util:         #7D7A6A;
+    --util-soft:    #EBEAE1;
+  }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  a { color: inherit; }
+  code { font-family: var(--mono); }
+
+  /* ── TOPBAR ─────────────────────────────────────────── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 60px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 20px;
+    padding: 0 24px;
+  }
+  .topbar-title { font-family: var(--serif); font-size: 17px; font-weight: 700; white-space: nowrap; }
+  .topbar-title span { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 8px; }
+  .search-wrap { flex: 1; max-width: 320px; margin-left: auto; position: relative; }
+  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+  #search {
+    width: 100%; height: 34px; border-radius: 7px;
+    border: 1px solid var(--border); background: var(--paper);
+    color: var(--ink); font-size: 13px; padding: 0 12px 0 32px;
+    font-family: var(--sans); outline: none;
+  }
+  #search:focus { border-color: var(--credito); }
+  #search::placeholder { color: var(--muted); }
+
+  /* ── LAYOUT ─────────────────────────────────────────── */
+  .layout { display: flex; margin-top: 60px; }
+
+  .sidebar {
+    width: var(--sidebar-w); flex-shrink: 0;
+    position: fixed; top: 60px; bottom: 0; left: 0;
+    overflow-y: auto;
+    padding: 24px 0 40px;
+    border-right: 1px solid var(--border);
+  }
+  .nav-label { font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); padding: 4px 22px 8px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 22px; font-size: 13px; color: var(--muted);
+    text-decoration: none; border-left: 2px solid transparent;
+    transition: color .12s, border-color .12s, background .12s;
+  }
+  .nav-item:hover { color: var(--ink); background: var(--border-soft); }
+  .nav-item.active { color: var(--ink); font-weight: 600; background: var(--border-soft); }
+  .nav-item .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .nav-item[data-accent="credito"].active { border-left-color: var(--credito); }
+  .nav-item[data-accent="credito"] .dot { background: var(--credito); }
+  .nav-item[data-accent="comercial"].active { border-left-color: var(--comercial); }
+  .nav-item[data-accent="comercial"] .dot { background: var(--comercial); }
+  .nav-item[data-accent="neutral"].active { border-left-color: var(--ink); }
+
+  .main { margin-left: var(--sidebar-w); flex: 1; padding: 44px 40px 100px; max-width: 900px; }
+
+  section { scroll-margin-top: 76px; margin-bottom: 56px; }
+  section h1 { font-family: var(--serif); font-size: 27px; margin-bottom: 8px; text-wrap: balance; }
+  section > p.lede { color: var(--muted); font-size: 13.5px; max-width: 640px; line-height: 1.65; margin-bottom: 20px; }
+
+  .stat-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+  .stat-chip {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 16px; min-width: 108px;
+  }
+  .stat-chip b { display: block; font-family: var(--serif); font-size: 20px; }
+  .stat-chip span { font-size: 11px; color: var(--muted); }
+
+  .legend-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 18px; font-size: 12px; color: var(--muted); }
+  .legend-row .pill { margin-right: 4px; }
+
+  /* ── PAGE SECTION HEADER (Crédito / Comercial) ───────── */
+  .page-head { border-bottom: 2px solid var(--border); padding-bottom: 14px; margin-bottom: 22px; }
+  .page-head[data-accent="credito"] { border-bottom-color: var(--credito); }
+  .page-head[data-accent="comercial"] { border-bottom-color: var(--comercial); }
+  .page-head h1 { display: flex; align-items: center; gap: 10px; }
+  .page-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; padding: 3px 9px; border-radius: 5px; }
+  .page-tag[data-accent="credito"] { background: var(--credito-soft); color: var(--credito); }
+  .page-tag[data-accent="comercial"] { background: var(--comercial-soft); color: var(--comercial); }
+
+  .group-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 26px 0 12px; }
+  .group-label:first-of-type { margin-top: 0; }
+
+  .pill {
+    display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .04em; border-radius: 4px;
+    padding: 2px 7px; background: var(--border-soft); color: var(--muted);
+  }
+
+  /* ── VISUAL CARDS ─────────────────────────────────────── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .vcard {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; border-top: 3px solid var(--border);
+  }
+  .vcard[data-accent="credito"] { border-top-color: var(--credito); }
+  .vcard[data-accent="comercial"] { border-top-color: var(--comercial); }
+  .vcard-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .vcard-head h3 { font-size: 13.5px; font-weight: 600; }
+  .vcard p { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+  .vcard .fields { margin-top: 8px; font-size: 11.5px; font-family: var(--mono); color: var(--ink); background: var(--paper); border-radius: 5px; padding: 6px 8px; line-height: 1.6; word-break: break-word; }
+  .vcard .fields b { font-family: var(--sans); font-weight: 600; }
+
+  .note-box {
+    display: flex; gap: 9px; align-items: flex-start;
+    background: var(--border-soft); border: 1px solid var(--border); border-radius: 7px;
+    padding: 11px 14px; margin: 14px 0 22px; font-size: 12.5px; color: var(--muted); line-height: 1.55;
+  }
+  .note-box svg { flex-shrink: 0; margin-top: 1px; color: var(--muted); }
+
+  /* ── RULE CARD (regra da conclusiva) ─────────────────── */
+  .rule-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin: 4px 0 26px; }
+  .rule-card h3 { font-family: var(--serif); font-size: 15px; margin-bottom: 6px; }
+  .rule-card > p:not(.rule-footnote) { font-size: 12.5px; color: var(--muted); margin-bottom: 12px; }
+  .rule-footnote { font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.55; }
+  .pill-result { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+  .pill-result.conclusiva { background: var(--ok-soft); color: var(--credito); }
+  .pill-result.naoconclusiva { background: var(--warn-soft); color: var(--warn); }
+  .pill-result.outros { background: var(--border-soft); color: var(--muted); }
+
+  .tname-friendly { font-family: var(--serif); font-size: 14px; font-weight: 700; }
+  .tname-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* ── TABLES (Medidas) ─────────────────────────────────── */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 4px; }
+  table.data { width: 100%; border-collapse: collapse; background: var(--card); }
+  table.data thead th {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--muted); background: var(--border-soft); padding: 9px 13px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  table.data tbody tr { border-bottom: 1px solid var(--border-soft); }
+  table.data tbody tr:last-child { border-bottom: none; }
+  table.data td { padding: 10px 13px; vertical-align: top; font-size: 12.5px; }
+  table.data td.mname { font-family: var(--mono); color: var(--ink); font-weight: 600; white-space: nowrap; }
+  table.data .used { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--ok-soft); color: var(--credito); white-space: nowrap; }
+  table.data .unused { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--border-soft); color: var(--muted); white-space: nowrap; }
+  details.dax { margin-top: 6px; }
+  details.dax summary { cursor: pointer; font-size: 11px; color: var(--muted); user-select: none; }
+  details.dax summary:hover { color: var(--ink); }
+  details.dax pre { font-family: var(--mono); font-size: 11px; background: var(--paper); border: 1px solid var(--border-soft); border-radius: 5px; padding: 8px 10px; margin-top: 6px; white-space: pre-wrap; word-break: break-word; }
+
+  .measure-group-title { font-family: var(--serif); font-size: 16px; margin: 28px 0 4px; }
+  .measure-group-title:first-of-type { margin-top: 0; }
+  .measure-group-sub { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+
+  /* ── TABLE (Bases de dados) CARDS ─────────────────────── */
+  .tbl-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 12px; }
+  .tbl-card-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+  .tbl-card-head code.tname { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+  .badge { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; border-radius: 4px; padding: 2px 8px; }
+  .badge-fato { background: var(--fato-soft); color: var(--fato); }
+  .badge-dim  { background: var(--dim-soft);  color: var(--dim); }
+  .badge-util { background: var(--util-soft); color: var(--util); }
+  .tbl-card p.desc { font-size: 12.5px; color: var(--ink); margin-bottom: 10px; line-height: 1.55; }
+  .meta-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+  .chip { font-size: 11.5px; color: var(--muted); background: var(--paper); border: 1px solid var(--border-soft); border-radius: 20px; padding: 3px 10px; }
+  .chip strong { color: var(--ink); font-weight: 600; }
+  .rel-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .rel-row .chip.rel { font-family: var(--mono); font-size: 11px; }
+  details.cols summary { cursor: pointer; font-size: 12px; color: var(--fato); margin-top: 4px; user-select: none; }
+  details.cols summary:hover { text-decoration: underline; }
+  details.cols .col-list { margin-top: 8px; font-size: 12px; }
+  details.cols .col-list div { display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--border-soft); }
+  details.cols .col-list div:last-child { border-bottom: none; }
+  details.cols .col-list code { font-family: var(--mono); color: var(--ink); min-width: 200px; flex-shrink: 0; }
+  details.cols .col-list span { color: var(--muted); }
+
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  .hidden-by-search { display: none !important; }
+
+  footer.doc-footer { color: var(--muted); font-size: 11.5px; padding: 20px 0 0; border-top: 1px solid var(--border-soft); margin-top: 12px; }
+
+  @media (max-width: 860px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 28px 18px 80px; }
+    .search-wrap { max-width: 180px; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="topbar-title">Gestão de Crédito <span>· documentação do dashboard</span></div>
+  <div class="search-wrap">
+    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="search" type="search" placeholder="Buscar gráfico, medida, tabela…" autocomplete="off">
+  </div>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <div class="nav-label">Páginas do dashboard</div>
+  <a class="nav-item" data-accent="neutral" href="#pagina-capa"><span class="dot"></span>Capa</a>
+  <a class="nav-item" data-accent="credito" href="#pagina-credito"><span class="dot"></span>Crédito</a>
+  <a class="nav-item" data-accent="comercial" href="#pagina-comercial"><span class="dot"></span>Comercial</a>
+  <div class="nav-label" style="margin-top:14px;">Sobre os dados</div>
+  <a class="nav-item" data-accent="neutral" href="#medidas"><span class="dot"></span>Medidas</a>
+  <a class="nav-item" data-accent="neutral" href="#bases-de-dados"><span class="dot"></span>Bases de dados</a>
+</aside>
+
+<main class="main" id="main">
+
+  <!-- ═══════════════ PÁGINA CAPA ═══════════════ -->
+  <section id="pagina-capa">
+    <div class="page-head" data-accent="neutral">
+      <h1>Página · Capa <span class="page-tag" data-accent="credito" style="background:var(--border-soft);color:var(--muted);">aba 1 · inicial</span></h1>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Página de abertura do dashboard, com o menu de navegação para as demais abas e os indicadores de última atualização.</p>
+    </div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="credito" data-search="Relatórios menu navegação páginas"><div class="vcard-head"><h3>Relatórios</h3><span class="pill">Navegação</span></div><p>Menu que leva às páginas Crédito e Comercial.</p><div class="fields">Atenção: este menu ainda referencia 3 páginas antigas que não existem mais no arquivo — não afeta o funcionamento, mas é resíduo a limpar.</div></div>
+      <div class="vcard" data-accent="credito" data-search="Documentação botão link"><div class="vcard-head"><h3>Documentação</h3><span class="pill">Navegação</span></div><p>Botão que abre um documento externo (Google Docs) com a documentação anterior do painel.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Última Atualização DB card KPI"><div class="vcard-head"><h3>Última Atualização (DB)</h3><span class="pill">KPI</span></div><p>Data/hora da última sincronização dos dados de origem, vinda da medida <code>última atualização</code>.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Última Atualização BI card oculto"><div class="vcard-head"><h3>Última Atualização (BI)</h3><span class="pill">KPI</span></div><p>Data/hora em que o Power BI Desktop atualizou o arquivo, vinda da tabela auxiliar <code>Ultima_Atualizacao</code>. Fica oculto na versão atual da Capa.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PÁGINA CRÉDITO ═══════════════ -->
+  <section id="pagina-credito">
+    <div class="page-head" data-accent="credito">
+      <h1>Página · Crédito <span class="page-tag" data-accent="credito">aba 2</span></h1>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Foco na produtividade da equipe de análise: taxa de conclusivas, volume de entregas e tempo de execução por analista. Baseada nas análises de crédito registradas em <code>fct_cases</code>.</p>
+    </div>
+
+    <div class="rule-card" id="regra-conclusiva">
+      <h3>Como uma análise vira "Conclusiva"?</h3>
+      <p>Toda análise recebe automaticamente um resultado, usado nos indicadores desta página:</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Demanda</th><th>Situação da análise</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr><td>Contém "Nova análise"</td><td>Aprovada, Reprovada, Condicionada ou Exceção</td><td><span class="pill-result conclusiva">Conclusiva</span></td></tr>
+            <tr><td>Contém "Nova análise"</td><td>Com pendência</td><td><span class="pill-result naoconclusiva">Não Conclusiva</span></td></tr>
+            <tr><td>Qualquer outra demanda (que não é "Nova análise")</td><td>Qualquer</td><td><span class="pill-result outros">Outros</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="rule-footnote">O indicador <strong>Total Conclusivas</strong> mostra o % de Conclusiva sobre o total de Conclusiva + Não Conclusiva — os casos "Outros" não entram nessa conta.</p>
+    </div>
+
+    <div class="group-label">KPIs</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="credito" data-search="Total Conclusivas KPI"><div class="vcard-head"><h3>Total Conclusivas</h3><span class="pill">KPI</span></div><p>% de análises com resultado Conclusiva, dentre as que já têm um resultado definitivo. <a href="#regra-conclusiva">Como calculamos ↓</a></p><div class="fields">Medida: <code>Conclusivas %</code></div></div>
+      <div class="vcard" data-accent="credito" data-search="Total Demandas Concluídas KPI"><div class="vcard-head"><h3>Total Demandas Concluídas</h3><span class="pill">KPI</span></div><p>Quantidade total de casos concluídos no período.</p><div class="fields">Medida: <code>Total Demandas Concluídas</code></div></div>
+      <div class="vcard" data-accent="credito" data-search="Oportunidades Únicas KPI"><div class="vcard-head"><h3>Oportunidades Únicas</h3><span class="pill">KPI</span></div><p>Número de oportunidades distintas atendidas (evita contar a mesma oportunidade duas vezes).</p><div class="fields">Medida: <code>Oportunidades Únicas</code></div></div>
+      <div class="vcard" data-accent="credito" data-search="% Análises de crédito KPI"><div class="vcard-head"><h3>% Análises de crédito</h3><span class="pill">KPI</span></div><p>Proporção entre Análises de Crédito e Procedimentos Rápidos no total de demandas.</p><div class="fields">Medida: <code>%  Análises vs Rápidos</code></div></div>
+      <div class="vcard" data-accent="credito" data-search="Média tempo em Fazendo KPI"><div class="vcard-head"><h3>Média tempo em Fazendo</h3><span class="pill">KPI</span></div><p>Tempo médio, em minutos, que uma análise passa em execução ("Fazendo").</p><div class="fields">Medida: <code>Média Tempo Fazendo (min)</code></div></div>
+      <div class="vcard" data-accent="credito" data-search="Mediana tempo em Fazendo KPI"><div class="vcard-head"><h3>Mediana tempo em Fazendo</h3><span class="pill">KPI</span></div><p>Tempo típico (mediana), em minutos, na etapa "Fazendo" — menos afetado por casos extremos.</p><div class="fields">Medida: <code>Mediana Tempo Fazendo (min)</code></div></div>
+    </div>
+
+    <div class="group-label">Gráficos</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="credito" data-search="% Conclusivas por mês dia gráfico barras"><div class="vcard-head"><h3>% Conclusivas por mês, dia</h3><span class="pill">Gráfico</span></div><p>Evolução do indicador ao longo do tempo, com detalhamento por dia.</p><div class="fields">Eixo: <code>dim_calendario[nome_mes, dia]</code><br>Valor: <code>Conclusivas %</code><br>Ao passar o mouse: <code>Conclusivas</code><br>Filtro do visual: por analista</div></div>
+      <div class="vcard" data-accent="credito" data-search="% Conclusivas por analista gráfico barras"><div class="vcard-head"><h3>% Conclusivas por analista</h3><span class="pill">Gráfico</span></div><p>Compara o indicador entre analistas, mês a mês.</p><div class="fields">Categoria: <code>dim_analistas_credito[nome_curto]</code><br>Série: <code>dim_calendario[nome_mes]</code><br>Valor: <code>Conclusivas %</code><br>Filtro do visual: por analista</div></div>
+      <div class="vcard" data-accent="credito" data-search="Entregas por analista gráfico barras"><div class="vcard-head"><h3>Entregas por analista</h3><span class="pill">Gráfico</span></div><p>Volume de entregas por analista e mês.</p><div class="fields">Categoria: <code>dim_analistas_credito[nome_curto]</code><br>Série: <code>dim_calendario[nome_mes]</code><br>Valor: <code>Total Demandas Concluídas</code><br>Filtro do visual: por analista</div></div>
+      <div class="vcard" data-accent="credito" data-search="Mediana Tempo Fazendo gráfico barras"><div class="vcard-head"><h3>Mediana Tempo Fazendo</h3><span class="pill">Gráfico</span></div><p>Compara o tempo típico em "Fazendo" entre analistas, mês a mês.</p><div class="fields">Categoria: <code>dim_analistas_credito[nome_curto]</code><br>Série: <code>dim_calendario[nome_mes]</code><br>Valor: <code>Mediana Tempo Fazendo (hh:mm)</code><br>Filtro do visual: por analista</div></div>
+      <div class="vcard" data-accent="credito" data-search="Entregas por mês dia gráfico barras"><div class="vcard-head"><h3>Entregas por mês, dia</h3><span class="pill">Gráfico</span></div><p>Volume de entregas ao longo do tempo, com detalhamento por dia.</p><div class="fields">Eixo: <code>dim_calendario[nome_mes, dia]</code><br>Valor: <code>Total Demandas Concluídas</code><br>Ao passar o mouse: <code>Total Novas Análises Concluídas</code><br>Filtro do visual: por analista</div></div>
+    </div>
+
+    <div class="group-label">Segmentações (filtros)</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="credito" data-search="Slicer Período segmentação"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Filtra por ano, mês, semana ou dia. Vem fixado em 2026.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Slicer Responsável segmentação analista"><div class="vcard-head"><h3>Responsável</h3><span class="pill">Segmentação</span></div><p>Filtra por analista responsável (<code>dim_analistas_credito</code>).</p></div>
+      <div class="vcard" data-accent="credito" data-search="Slicer Construtora segmentação"><div class="vcard-head"><h3>Construtora</h3><span class="pill">Segmentação</span></div><p>Filtra por incorporadora.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Slicer Demanda segmentação"><div class="vcard-head"><h3>Demanda</h3><span class="pill">Segmentação</span></div><p>Filtra por categoria e tipo de demanda solicitada.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Slicer Empreendimento segmentação"><div class="vcard-head"><h3>Empreendimento</h3><span class="pill">Segmentação</span></div><p>Filtra por empreendimento.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Slicer Regional segmentação"><div class="vcard-head"><h3>Regional</h3><span class="pill">Segmentação</span></div><p>Filtra por regional da construtora.</p></div>
+    </div>
+
+    <div class="group-label">Tabela de detalhamento &amp; navegação</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="credito" data-search="Tbl Tempo Fazendo tabela detalhe oculta"><div class="vcard-head"><h3>Tabela de tempos</h3><span class="pill">Tabela</span></div><p>Lista cada análise individualmente: link do caso, incorporadora, identificador, demanda, situação, analista responsável e tempo gasto em "Fazendo" (<code>Média Tempo Fazendo (hh:mm)</code>). Fica oculta por padrão — abre e fecha pelos botões "i" / "x", via bookmarks.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Botão Home navegação"><div class="vcard-head"><h3>Botão Home</h3><span class="pill">Navegação</span></div><p>Volta para a página Capa.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PÁGINA COMERCIAL ═══════════════ -->
+  <section id="pagina-comercial">
+    <div class="page-head" data-accent="comercial">
+      <h1>Página · Comercial <span class="page-tag" data-accent="comercial">aba 3</span></h1>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Nome completo da página: "Comercial [análise por oportunidade]". Foco no volume de pastas/análises de crédito por regional, incorporadora e tempo, com base em <code>fct_pastas_credito</code>. O gráfico "Volume por Mês" fica sempre visível; os gráficos "por semana" e "por dia" dividem o mesmo espaço e alternam via botões <strong>Sem / Dia</strong> (bookmarks). Um segundo toggle, <strong>Modo: Estática / Dinâmica</strong>, troca a medida usada pelos cinco gráficos (os três de linha e os dois de barra, "Volume por Regional" e "Volume por Incorporadora") ao mesmo tempo, sem precisar duplicar visuais nem bookmarks.</p>
+    </div>
+
+    <div class="group-label">Gráficos</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="comercial" data-search="Volume por Regional gráfico barras modo estática dinâmica"><div class="vcard-head"><h3>Volume por Regional</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por regional. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Categoria: <code>dim_construtoras[regional]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Últimas Analises (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora gráfico barras modo estática dinâmica"><div class="vcard-head"><h3>Volume por Incorporadora</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por incorporadora. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Categoria: <code>dim_construtoras[nome]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Últimas Analises (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Mês gráfico linha visão mensal modo estática dinâmica"><div class="vcard-head"><h3>Volume por Mês</h3><span class="pill">Gráfico</span></div><p>Sempre visível — não faz parte do toggle Sem/Dia. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[inicio_mes]</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por semana gráfico linha oculto modo estática dinâmica"><div class="vcard-head"><h3>Volume por semana</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Sem" (Semanal), via bookmark "2. Volume por Semana" — estado padrão da página. Ocupa o mesmo espaço do gráfico "por dia". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[semana_iso]</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por dia gráfico linha diária modo estática dinâmica"><div class="vcard-head"><h3>Volume por dia</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Dia" (Diária), via bookmark "2. Volume por Dia". Fica oculto por padrão até o bookmark ser acionado; ocupa o mesmo espaço do gráfico "por semana". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[data]</code><br>Ao passar o mouse: <code>nome_dia_semana_abrev</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
+    </div>
+
+    <div class="group-label">Segmentações (filtros)</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="comercial" data-search="Slicer Regional segmentação"><div class="vcard-head"><h3>Regional</h3><span class="pill">Segmentação</span></div><p>Filtra por regional.</p></div>
+      <div class="vcard" data-accent="comercial" data-search="Slicer Construtora segmentação"><div class="vcard-head"><h3>Construtora</h3><span class="pill">Segmentação</span></div><p>Filtra por incorporadora.</p></div>
+      <div class="vcard" data-accent="comercial" data-search="Slicer Empreendimento segmentação"><div class="vcard-head"><h3>Empreendimento</h3><span class="pill">Segmentação</span></div><p>Filtra por empreendimento.</p></div>
+      <div class="vcard" data-accent="comercial" data-search="Slicer Conclusiva segmentação"><div class="vcard-head"><h3>Conclusiva</h3><span class="pill">Segmentação</span></div><p>Filtra por resultado da análise (<code>fct_pastas_credito[conclusiva]</code>).</p></div>
+      <div class="vcard" data-accent="comercial" data-search="Slicer Período segmentação"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Duas versões, trocadas junto com o gráfico de linha: uma por ano/mês/semana do mês/dia (visão mensal e diária) e outra por ano ISO/semana ISO (visão semanal).</p></div>
+    </div>
+
+    <div class="group-label">Navegação</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="comercial" data-search="Botões Diária Semanal navegação visão bookmark sem dia"><div class="vcard-head"><h3>Dia / Sem</h3><span class="pill">Navegação</span></div><p>Alternam, via bookmarks, qual gráfico de linha e qual slicer de período ficam visíveis (diário ou semanal — o semanal é o estado padrão da página).</p></div>
+      <div class="vcard" data-accent="comercial" data-search="Modo Estática Dinâmica toggle slicer segmentação medida"><div class="vcard-head"><h3>Modo: Estática / Dinâmica</h3><span class="pill">Segmentação</span></div><p>Troca, ao mesmo tempo, a medida usada pelos cinco gráficos (os três de linha — Mês, semana e dia — e os dois de barra — Volume por Regional e Volume por Incorporadora). Diferente do Dia/Sem, não é um bookmark — é um slicer "Basic" ligado à tabela auxiliar desconectada <code>Modo Análise[Modo]</code>, então funciona de forma independente do toggle Sem/Dia (clicar em um não afeta o outro).</p><div class="fields">Medidas roteadoras: <code>Últimas Analises (modo)</code>, <code>% Conclusivas (modo)</code><br>Padrão se nada for selecionado: <strong>Dinâmica</strong></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Botão Home navegação"><div class="vcard-head"><h3>Botão Home</h3><span class="pill">Navegação</span></div><p>Volta para a página Capa.</p></div>
+    </div>
+
+  </section>
+
+  <hr class="divider">
+
+  <!-- ═══════════════ MEDIDAS ═══════════════ -->
+  <section id="medidas">
+    <h1>Medidas</h1>
+    <p class="lede">20 medidas DAX, organizadas em três tabelas "de apoio" (<code>_medidas_qtd_credito</code>, <code>_medidas_qtd_comercial</code> e <code>_medidas_tempo</code>) que não guardam dados — só hospedam as fórmulas. Foram removidas as medidas e colunas calculadas que não apareciam em nenhum visual nem eram usadas por outra medida. Clique em "ver fórmula" para o DAX completo.</p>
+
+    <div class="measure-group-title">_medidas_qtd_credito — página Crédito</div>
+    <div class="measure-group-sub">Baseadas em <code>fct_cases</code> (análises de crédito).</div>
+    <div class="table-wrap">
+      <table class="data" data-search-table>
+        <thead><tr><th>Medida</th><th>O que calcula</th><th>Onde é usada</th></tr></thead>
+        <tbody>
+          <tr data-search="Conclusivas % medida"><td class="mname">Conclusivas %</td><td>% de casos "Conclusiva" entre os concluídos (Conclusivas ÷ (Conclusivas + Não Conclusivas)).<details class="dax"><summary>ver fórmula</summary><pre>VAR analises_concluidas = [Conclusivas] + [Não Conclusivas]
+RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details></td><td><span class="used">Crédito · KPI "Total Conclusivas" + 2 gráficos</span></td></tr>
+          <tr data-search="Conclusivas medida"><td class="mname">Conclusivas</td><td>Quantidade de casos com <code>conclusiva = "Conclusiva"</code>.</td><td><span class="unused">só usada dentro de Conclusivas %</span></td></tr>
+          <tr data-search="Não Conclusivas medida"><td class="mname">Não Conclusivas</td><td>Quantidade de casos com <code>conclusiva = "Não conclusiva"</code>.</td><td><span class="unused">só usada dentro de Conclusivas %</span></td></tr>
+          <tr data-search="Total Demandas Concluídas medida"><td class="mname">Total Demandas Concluídas</td><td>Total de casos concluídos no período (COUNTROWS de fct_cases).</td><td><span class="used">Crédito · KPI + 2 gráficos</span></td></tr>
+          <tr data-search="Total Novas Análises Concluídas medida"><td class="mname">Total Novas Análises Concluídas</td><td>Casos cuja demanda principal contém "Nova análise".</td><td><span class="used">Crédito · tooltip do gráfico "Entregas por mês, dia"</span></td></tr>
+          <tr data-search="Oportunidades Únicas medida"><td class="mname">Oportunidades Únicas</td><td>Contagem distinta de <code>oportunidade_id</code>.</td><td><span class="used">Crédito · KPI</span></td></tr>
+          <tr data-search="Análises vs Rápidos medida percentual"><td class="mname">%  Análises vs Rápidos</td><td>Proporção "Análise de Crédito" vs. "Procedimentos Rápidos" na categoria de demanda.</td><td><span class="used">Crédito · KPI</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="measure-group-title">_medidas_qtd_comercial — página Comercial</div>
+    <div class="measure-group-sub">Baseadas em <code>fct_pastas_credito</code> (pastas/análises de crédito por oportunidade).</div>
+    <div class="table-wrap">
+      <table class="data" data-search-table>
+        <thead><tr><th>Medida</th><th>O que calcula</th><th>Onde é usada</th></tr></thead>
+        <tbody>
+          <tr data-search="Total Conclusivas medida comercial"><td class="mname">Total Conclusivas</td><td>Quantidade de pastas com <code>conclusiva = "Conclusiva"</code>.</td><td><span class="unused">não usada nos visuais atuais</span></td></tr>
+          <tr data-search="Últimas Analises estática medida"><td class="mname">Últimas Analises (estática)</td><td>Conta a última análise de cada pasta dentro do mês fechado (<code>flag_ultima_analise_mes</code>).</td><td><span class="used">Comercial · indiretamente via "Últimas Analises (modo)" quando Modo = Estática</span></td></tr>
+          <tr data-search="Ultimas Analises dinâmica medida"><td class="mname">Últimas Analises (dinâmica)</td><td>Conta a última análise de cada pasta até a data mais recente disponível (<code>flag_ultima_analise</code>), acompanhando o filtro de período selecionado.</td><td><span class="used">Comercial · indiretamente via "Últimas Analises (modo)" quando Modo = Dinâmica (padrão)</span></td></tr>
+          <tr data-search="Últimas Analises modo medida toggle switch"><td class="mname">Últimas Analises (modo)</td><td>Escolhe entre as duas medidas acima conforme o slicer "Modo: Estática/Dinâmica" (<code>Modo Análise[Modo]</code>) — se nada estiver selecionado, assume "Dinâmica".<details class="dax"><summary>ver fórmula</summary><pre>SWITCH(
+    SELECTEDVALUE('Modo Análise'[Modo], "Dinâmica"),
+    "Estática", [Últimas Analises (estática)],
+    "Dinâmica", [Últimas Analises (dinâmica)]
+)</pre></details></td><td><span class="used">Comercial · gráficos "Volume por Mês/semana/dia" e "Volume por Regional/Incorporadora"</span></td></tr>
+          <tr data-search="Conclusivas dinâmica medida percentual"><td class="mname">% Conclusivas (dinâmica)</td><td>Apesar do nome, é uma <strong>contagem</strong> (não uma divisão): quantidade de últimas análises "dinâmicas" com resultado Conclusiva.</td><td><span class="used">Comercial · indiretamente via "% Conclusivas (modo)" quando Modo = Dinâmica (padrão)</span></td></tr>
+          <tr data-search="Conclusivas estática medida percentual"><td class="mname">% Conclusivas (estática)</td><td>Igual à anterior, mas sobre a última análise fechada do mês (<code>flag_ultima_analise_mes</code>) — também é uma contagem, não uma %.</td><td><span class="used">Comercial · indiretamente via "% Conclusivas (modo)" quando Modo = Estática</span></td></tr>
+          <tr data-search="Conclusivas modo medida toggle switch"><td class="mname">% Conclusivas (modo)</td><td>Mesma lógica de "Últimas Analises (modo)", mas para a contagem de conclusivas.<details class="dax"><summary>ver fórmula</summary><pre>SWITCH(
+    SELECTEDVALUE('Modo Análise'[Modo], "Dinâmica"),
+    "Estática", [% Conclusivas (estática)],
+    "Dinâmica", [% Conclusivas (dinâmica)]
+)</pre></details></td><td><span class="used">Comercial · gráficos "Volume por Mês/semana/dia"</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div>As medidas <strong>"% Conclusivas (dinâmica)"</strong>, <strong>"% Conclusivas (estática)"</strong> e <strong>"% Conclusivas (modo)"</strong> têm "%" no nome mas retornam uma contagem de linhas, não um percentual — vale renomear ou corrigir a fórmula para evitar confusão em quem for interpretar o dashboard.</div>
+    </div>
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><strong>Modo Análise</strong> é uma tabela auxiliar desconectada (2 linhas: "Dinâmica"/"Estática", sem relacionamento com o resto do modelo). Ela só existe para alimentar o slicer "Modo: Estática/Dinâmica" e as duas medidas roteadoras acima.</div>
+    </div>
+
+    <div class="measure-group-title">_medidas_tempo — tempo de execução</div>
+    <div class="measure-group-sub">Baseadas em <code>fct_cases</code>, coluna <code>tempo_total_fazendo_min</code> e datas da etapa "Fazendo".</div>
+    <div class="table-wrap">
+      <table class="data" data-search-table>
+        <thead><tr><th>Medida</th><th>O que calcula</th><th>Onde é usada</th></tr></thead>
+        <tbody>
+          <tr data-search="Média Tempo Fazendo min medida"><td class="mname">Média Tempo Fazendo (min)</td><td>Média de minutos em "Fazendo", só para casos que passaram por essa etapa.<details class="dax"><summary>ver fórmula</summary><pre>AVERAGEX(FILTER(fct_cases, NOT ISBLANK([fazendo_entrada_data])), [tempo_total_fazendo_min])</pre></details></td><td><span class="used">Crédito · KPI</span></td></tr>
+          <tr data-search="Média Tempo Fazendo hh mm medida"><td class="mname">Média Tempo Fazendo (hh:mm)</td><td>Mesma média, formatada em horas:minutos.</td><td><span class="used">Crédito · tabela de tempos (oculta)</span></td></tr>
+          <tr data-search="Mediana Tempo Fazendo min medida"><td class="mname">Mediana Tempo Fazendo (min)</td><td>Mediana de minutos em "Fazendo" — menos sensível a outliers.</td><td><span class="used">Crédito · KPI</span></td></tr>
+          <tr data-search="Mediana Tempo Fazendo hh mm medida"><td class="mname">Mediana Tempo Fazendo (hh:mm)</td><td>Mesma mediana, formatada em horas:minutos.</td><td><span class="used">Crédito · gráfico "Mediana Tempo Fazendo"</span></td></tr>
+          <tr data-search="Tempo Fazendo min medida"><td class="mname">Tempo Fazendo (min)</td><td>Soma bruta de <code>tempo_total_fazendo_min</code>.</td><td><span class="unused">não usada nos visuais atuais</span></td></tr>
+          <tr data-search="última atualização medida"><td class="mname">última atualização</td><td>Data/hora mais recente de sincronização (<code>MAX(synced_at)</code>).</td><td><span class="used">Capa · card "Última Atualização (DB)"</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ═══════════════ BASES DE DADOS ═══════════════ -->
+  <section id="bases-de-dados">
+    <h1>Bases de dados</h1>
+    <p class="lede">De onde vem cada número: o que é uma linha em cada base, se duplicatas entram na conta, e onde ela é usada.</p>
+
+    <div class="group-label">Registros de análises</div>
+
+    <div class="tbl-card" data-search="casos fct_cases análises de crédito">
+      <div class="tbl-card-head"><span class="tname-friendly">Casos</span><code class="tname-sub">analytics fct_cases</code><span class="badge badge-fato">Registro</span></div>
+      <p class="desc">Cada linha é <strong>uma análise de crédito (case)</strong> registrada no Salesforce. Não tem filtro nem remoção de duplicatas — se o mesmo processo ou a mesma pessoa aparecer em mais de uma análise, cada uma conta separadamente. É a base de toda a página Crédito.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 análise de crédito</span><span class="chip"><strong>Fonte</strong> Salesforce</span></div>
+      <div class="rel-row">Também traz dados de: <span class="chip rel">Analistas de crédito</span><span class="chip rel">Construtoras</span><span class="chip rel">Empreendimentos</span><span class="chip rel">Calendário</span></div>
+      <details class="cols"><summary>ver colunas principais</summary><div class="col-list">
+        <div><code>id, case_number, case_url, oportunidade_id</code><span>identificação do caso</span></div>
+        <div><code>account_id, empreendimento_id, responsavel_id</code><span>a qual construtora, empreendimento e analista pertence</span></div>
+        <div><code>fase, situacao_analise, conclusiva, categoria_demanda, demanda_principal, prioridade</code><span>classificação da análise</span></div>
+        <div><code>created_*, fazendo_entrada/saida_*, pausado_*, concluido_*, fechamento_*</code><span>data e hora de cada etapa do fluxo</span></div>
+        <div><code>sla_min, sla_liquido_min, tempo_total_*_min, synced_at</code><span>tempos calculados por etapa, em minutos, e horário de sincronização</span></div>
+      </div></details>
+    </div>
+
+    <div class="tbl-card" data-search="pastas de crédito fct_pastas_credito comercial análise por oportunidade última análise">
+      <div class="tbl-card-head"><span class="tname-friendly">Pastas de crédito</span><code class="tname-sub">analytics fct_pastas_credito</code><span class="badge badge-fato">Registro</span></div>
+      <p class="desc">Uma linha por pasta/análise de crédito por oportunidade. Traz flags que identificam a <strong>última análise de cada pasta</strong> (geral e dentro do mês fechado), usadas para não contar a mesma pasta mais de uma vez nos gráficos. É a base da página Comercial.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 pasta/análise</span><span class="chip"><strong>Fonte</strong> Salesforce, a partir dos casos</span></div>
+      <div class="rel-row">Também traz dados de: <span class="chip rel">Construtoras</span><span class="chip rel">Empreendimentos</span><span class="chip rel">Calendário</span></div>
+      <details class="cols"><summary>ver colunas</summary><div class="col-list">
+        <div><code>id, chave, proponente_1_cpf, account_id, empreendimento_id, cod_incorporadora, responsavel_id</code><span>identificação</span></div>
+        <div><code>situacao_analise, conclusiva, demanda_principal, qtd_analises</code><span>resultado e volume de análises da pasta</span></div>
+        <div><code>flag_primeira_analise, flag_ultima_analise, flag_ultima_analise_mes, flag_ultima_conclusiva</code><span>marcações usadas pelas medidas "Últimas Analises"</span></div>
+        <div><code>fechamento_*, created_*, primeira_data_criacao, sla_min, sla_liquido_min</code><span>tempo</span></div>
+      </div></details>
+    </div>
+
+    <div class="group-label">Cadastros</div>
+
+    <div class="tbl-card" data-search="analistas de crédito dim_analistas_credito">
+      <div class="tbl-card-head"><span class="tname-friendly">Analistas de Crédito</span><code class="tname-sub">analytics dim_analistas_credito</code><span class="badge badge-dim">Cadastro</span></div>
+      <p class="desc">Lista de analistas. Alimenta o filtro e os agrupamentos de "Responsável"/"Analista" na página Crédito. Relaciona só com <code>fct_cases</code> — não há relacionamento com <code>fct_pastas_credito</code>.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 analista</span><span class="chip"><strong>Fonte</strong> Salesforce</span></div>
+      <details class="cols"><summary>ver colunas</summary><div class="col-list"><div><code>id, nome_completo, nome_curto</code><span>identificação e nome</span></div></div></details>
+    </div>
+
+    <div class="tbl-card" data-search="construtoras incorporadoras regional dim_construtoras tem fato">
+      <div class="tbl-card-head"><span class="tname-friendly">Construtoras / Incorporadoras</span><code class="tname-sub">analytics dim_construtoras</code><span class="badge badge-dim">Cadastro</span></div>
+      <p class="desc">Lista de construtoras/incorporadoras e sua regional. Usada em ambas as páginas.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 construtora</span><span class="chip"><strong>Fonte</strong> Salesforce</span></div>
+      <details class="cols"><summary>ver colunas</summary><div class="col-list">
+        <div><code>id, nome, regional, gestor_id</code><span>identificação, nome, regional e gestor responsável</span></div>
+        <div><code>Tem Fato (Cases)</code> <span class="pill" style="margin-left:4px;">DAX</span><span>indica se a construtora tem pelo menos um caso relacionado em <code>fct_cases</code></span></div>
+        <div><code>Tem Fato (Pastas)</code> <span class="pill" style="margin-left:4px;">DAX</span><span>indica se a construtora tem pelo menos uma pasta relacionada em <code>fct_pastas_credito</code></span></div>
+      </div></details>
+    </div>
+
+    <div class="tbl-card" data-search="empreendimentos dim_empreendimentos tem fato">
+      <div class="tbl-card-head"><span class="tname-friendly">Empreendimentos</span><code class="tname-sub">analytics dim_empreendimentos</code><span class="badge badge-dim">Cadastro</span></div>
+      <p class="desc">Lista de empreendimentos, já com o nome da incorporadora dona de cada um.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 empreendimento</span><span class="chip"><strong>Fonte</strong> Salesforce</span></div>
+      <details class="cols"><summary>ver colunas</summary><div class="col-list">
+        <div><code>id, nome, incorporadora_id, nome_incorporadora, cidade, is_deleted</code><span>identificação e localização</span></div>
+        <div><code>Tem Fato (Cases)</code> <span class="pill" style="margin-left:4px;">DAX</span><span>indica se o empreendimento tem pelo menos um caso relacionado em <code>fct_cases</code></span></div>
+        <div><code>Tem Fato (Pastas)</code> <span class="pill" style="margin-left:4px;">DAX</span><span>indica se o empreendimento tem pelo menos uma pasta relacionada em <code>fct_pastas_credito</code></span></div>
+      </div></details>
+    </div>
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div>As colunas <strong>"Tem Fato (Cases)"</strong> e <strong>"Tem Fato (Pastas)"</strong> (em Construtoras e Empreendimentos) usam <code>NOT ISEMPTY(RELATEDTABLE(...))</code>, que segue o relacionamento pelo <code>id</code>. O motor do Power BI (Vertipaq) compara texto em relacionamentos de forma <strong>case-insensitive</strong>, enquanto a fonte no PostgreSQL é case-sensitive por padrão. Já apareceu um caso real onde um empreendimento parecia não ter pastas relacionadas ao checar manualmente por igualdade exata (<code>=</code>), mas o Power BI mostrava "True" corretamente — o id em <code>fct_pastas_credito</code> tinha uma variante de caixa (comum em ids Salesforce de 18 caracteres, cujos 3 últimos são um checksum de maiúsculas/minúsculas do id de 15). Ao investigar esse tipo de coluna diretamente na fonte, use uma comparação case-insensitive (<code>ILIKE</code> no Postgres) em vez de <code>=</code>, para não ter falso-negativo.</div>
+    </div>
+
+    <div class="tbl-card" data-search="calendário datas período dim_calendario inicio_mes">
+      <div class="tbl-card-head"><span class="tname-friendly">Calendário</span><code class="tname-sub">analytics dim_calendario</code><span class="badge badge-dim">Cadastro</span></div>
+      <p class="desc">Calendário completo em português, a partir de 2026. Base de todos os eixos de tempo e dos filtros "Período".</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 dia</span><span class="chip"><strong>Fonte</strong> gerado automaticamente</span></div>
+      <details class="cols"><summary>ver colunas</summary><div class="col-list">
+        <div><code>data, ano, trimestre, mes, dia, inicio_mes</code><span>componentes da data e primeiro dia do mês (usado como eixo do gráfico "Volume por Mês")</span></div>
+        <div><code>nome_mes, nome_mes_abrev, nome_dia_semana(_abrev)</code><span>nomes em português</span></div>
+        <div><code>ano_mes, ano_mes_ordem, semana_iso, ano_iso, semana_iso_ordem, nome_semana_mes</code><span>agrupamentos de período</span></div>
+        <div><code>eh_fim_semana, eh_hoje, eh_ontem, eh_mes_atual, eh_ano_atual</code><span>marcações automáticas (hoje, este mês, fim de semana…)</span></div>
+      </div></details>
+    </div>
+
+    <div class="group-label">Auxiliares</div>
+    <div class="tbl-card" data-search="última atualização do painel Ultima_Atualizacao">
+      <div class="tbl-card-head"><span class="tname-friendly">Última atualização do painel</span><code class="tname-sub">Ultima_Atualizacao</code><span class="badge badge-util">Auxiliar</span><span class="unused">card oculto na Capa</span></div>
+      <p class="desc">Guarda a data e hora em que o Power BI Desktop atualizou o arquivo pela última vez. Gerada automaticamente — não vem do Salesforce. Alimentaria o card "Última Atualização (BI)" na Capa, hoje oculto (o card visível usa a medida <code>última atualização</code>, baseada em <code>fct_cases[synced_at]</code>).</p>
+    </div>
+    <div class="tbl-card" data-search="fórmulas de cálculo _medidas_qtd_credito _medidas_qtd_comercial _medidas_tempo">
+      <div class="tbl-card-head"><span class="tname-friendly">Fórmulas de cálculo</span><code class="tname-sub">_medidas_qtd_credito · _medidas_qtd_comercial · _medidas_tempo</code><span class="badge badge-util">Auxiliar</span></div>
+      <p class="desc">Não guardam nenhum dado — servem só para organizar as fórmulas usadas nos gráficos, detalhadas na seção <a href="#medidas">Medidas</a>, mais acima.</p>
+    </div>
+
+    <footer class="doc-footer">Documentação atualizada a partir da definição do relatório em 28/07/2026 — reflete a estrutura do dashboard no momento da geração.</footer>
+  </section>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-item'));
+  var sections = links.map(function (l) { return document.getElementById(l.getAttribute('href').slice(1)); });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var idx = sections.indexOf(entry.target);
+        if (idx === -1) return;
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          links[idx].classList.add('active');
+        }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    sections.forEach(function (s) { if (s) io.observe(s); });
+  }
+
+  var search = document.getElementById('search');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('[data-search]'));
+  var rows = Array.prototype.slice.call(document.querySelectorAll('table.data tbody tr[data-search]'));
+  var groupLabels = Array.prototype.slice.call(document.querySelectorAll('.group-label, .measure-group-title, .measure-group-sub'));
+
+  search.addEventListener('input', function () {
+    var q = search.value.trim().toLowerCase();
+    cards.forEach(function (el) {
+      var hay = (el.getAttribute('data-search') + ' ' + el.textContent).toLowerCase();
+      el.classList.toggle('hidden-by-search', q.length > 0 && hay.indexOf(q) === -1);
+    });
+    rows.forEach(function (el) {
+      var hay = (el.getAttribute('data-search') + ' ' + el.textContent).toLowerCase();
+      el.classList.toggle('hidden-by-search', q.length > 0 && hay.indexOf(q) === -1);
+    });
+  });
+})();
+</script>
