@@ -318,13 +318,12 @@
   <section id="pagina-capa">
     <div class="page-head" data-accent="neutral">
       <h1>Página · Capa <span class="page-tag" data-accent="credito" style="background:var(--border-soft);color:var(--muted);">aba 1 · inicial</span></h1>
-      <p class="lede" style="margin-top:6px;margin-bottom:0;">Página de abertura do dashboard, com o menu de navegação para as demais abas e os indicadores de última atualização.</p>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Página de abertura do dashboard, com o menu de navegação para as demais abas e o indicador de última atualização.</p>
     </div>
     <div class="card-grid">
       <div class="vcard" data-accent="credito" data-search="Relatórios menu navegação páginas"><div class="vcard-head"><h3>Relatórios</h3><span class="pill">Navegação</span></div><p>Menu que leva às páginas Crédito e Comercial.</p><div class="fields">Atenção: este menu ainda referencia 3 páginas antigas que não existem mais no arquivo — não afeta o funcionamento, mas é resíduo a limpar.</div></div>
       <div class="vcard" data-accent="credito" data-search="Documentação botão link"><div class="vcard-head"><h3>Documentação</h3><span class="pill">Navegação</span></div><p>Botão que abre um documento externo (Google Docs) com a documentação anterior do painel.</p></div>
       <div class="vcard" data-accent="credito" data-search="Última Atualização DB card KPI"><div class="vcard-head"><h3>Última Atualização (DB)</h3><span class="pill">KPI</span></div><p>Data/hora da última sincronização dos dados de origem, vinda da medida <code>última atualização</code>.</p></div>
-      <div class="vcard" data-accent="credito" data-search="Última Atualização BI card oculto"><div class="vcard-head"><h3>Última Atualização (BI)</h3><span class="pill">KPI</span></div><p>Data/hora em que o Power BI Desktop atualizou o arquivo, vinda da tabela auxiliar <code>Ultima_Atualizacao</code>. Fica oculto na versão atual da Capa.</p></div>
     </div>
   </section>
 
@@ -372,17 +371,21 @@
 
     <div class="group-label">Segmentações (filtros)</div>
     <div class="card-grid">
-      <div class="vcard" data-accent="credito" data-search="Slicer Período segmentação"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Filtra por ano, mês, semana ou dia. Vem fixado em 2026.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Slicer Período segmentação data criação created_data"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Filtra por ano, mês, semana ou dia. Vem fixado em 2026.</p><div class="fields">Filtra pela <strong>data de criação do caso</strong> (<code>fct_cases[created_data]</code>) — não pela data de fechamento/conclusão. Um caso criado em janeiro e concluído em fevereiro aparece no período de janeiro.</div></div>
       <div class="vcard" data-accent="credito" data-search="Slicer Responsável segmentação analista"><div class="vcard-head"><h3>Responsável</h3><span class="pill">Segmentação</span></div><p>Filtra por analista responsável (<code>dim_analistas_credito</code>).</p></div>
       <div class="vcard" data-accent="credito" data-search="Slicer Construtora segmentação"><div class="vcard-head"><h3>Construtora</h3><span class="pill">Segmentação</span></div><p>Filtra por incorporadora.</p></div>
       <div class="vcard" data-accent="credito" data-search="Slicer Demanda segmentação"><div class="vcard-head"><h3>Demanda</h3><span class="pill">Segmentação</span></div><p>Filtra por categoria e tipo de demanda solicitada.</p></div>
       <div class="vcard" data-accent="credito" data-search="Slicer Empreendimento segmentação"><div class="vcard-head"><h3>Empreendimento</h3><span class="pill">Segmentação</span></div><p>Filtra por empreendimento.</p></div>
       <div class="vcard" data-accent="credito" data-search="Slicer Regional segmentação"><div class="vcard-head"><h3>Regional</h3><span class="pill">Segmentação</span></div><p>Filtra por regional da construtora.</p></div>
     </div>
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><strong>Importante:</strong> todos os gráficos e KPIs desta página são filtrados pela <strong>data de criação do caso</strong> (<code>fct_cases[created_data]</code>, relacionamento ativo com <code>dim_calendario</code>). A coluna <code>fct_cases[fechamento_data]</code> existe na base mas não tem relacionamento com o calendário — não é usada em nenhum filtro ou gráfico.</div>
+    </div>
 
     <div class="group-label">Tabela de detalhamento &amp; navegação</div>
     <div class="card-grid">
-      <div class="vcard" data-accent="credito" data-search="Tbl Tempo Fazendo tabela detalhe oculta"><div class="vcard-head"><h3>Tabela de tempos</h3><span class="pill">Tabela</span></div><p>Lista cada análise individualmente: link do caso, incorporadora, identificador, demanda, situação, analista responsável e tempo gasto em "Fazendo" (<code>Média Tempo Fazendo (hh:mm)</code>). Fica oculta por padrão — abre e fecha pelos botões "i" / "x", via bookmarks.</p></div>
+      <div class="vcard" data-accent="credito" data-search="Tbl Tempo Fazendo tabela detalhe"><div class="vcard-head"><h3>Tabela de tempos</h3><span class="pill">Tabela</span></div><p>Lista cada análise individualmente: link do caso, incorporadora, identificador, demanda, situação, analista responsável e tempo gasto em "Fazendo" (<code>Média Tempo Fazendo (hh:mm)</code>). Abre e fecha pelos botões "i" / "x".</p></div>
       <div class="vcard" data-accent="credito" data-search="Botão Home navegação"><div class="vcard-head"><h3>Botão Home</h3><span class="pill">Navegação</span></div><p>Volta para a página Capa.</p></div>
     </div>
   </section>
@@ -391,7 +394,7 @@
   <section id="pagina-comercial">
     <div class="page-head" data-accent="comercial">
       <h1>Página · Comercial <span class="page-tag" data-accent="comercial">aba 3</span></h1>
-      <p class="lede" style="margin-top:6px;margin-bottom:0;">Nome completo da página: "Comercial [análise por oportunidade]". Foco no volume de pastas/análises de crédito por regional, incorporadora e tempo, com base em <code>fct_pastas_credito</code>. O gráfico "Volume por Mês" fica sempre visível; os gráficos "por semana" e "por dia" dividem o mesmo espaço e alternam via botões <strong>Sem / Dia</strong> (bookmarks). Um segundo toggle, <strong>Modo: Estática / Dinâmica</strong>, troca a medida usada pelos cinco gráficos (os três de linha e os dois de barra, "Volume por Regional" e "Volume por Incorporadora") ao mesmo tempo, sem precisar duplicar visuais nem bookmarks.</p>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Foco no volume de pastas/análises de crédito por regional, incorporadora e tempo, com base em <code>fct_pastas_credito</code>. O gráfico "Volume por Mês" fica sempre visível; os gráficos "por semana" e "por dia" dividem o mesmo espaço e alternam via botões <strong>Sem / Dia</strong> (bookmarks). Um segundo toggle, <strong>Modo: Estática / Dinâmica</strong>, troca a medida usada pelos cinco gráficos (os três de linha e os dois de barra, "Volume por Regional" e "Volume por Incorporadora") ao mesmo tempo, sem precisar duplicar visuais nem bookmarks.</p>
     </div>
 
     <div class="group-label">Gráficos</div>
@@ -399,8 +402,8 @@
       <div class="vcard" data-accent="comercial" data-search="Volume por Regional gráfico barras modo estática dinâmica"><div class="vcard-head"><h3>Volume por Regional</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por regional. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Categoria: <code>dim_construtoras[regional]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Últimas Analises (modo)</code></div></div>
       <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora gráfico barras modo estática dinâmica"><div class="vcard-head"><h3>Volume por Incorporadora</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por incorporadora. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Categoria: <code>dim_construtoras[nome]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Últimas Analises (modo)</code></div></div>
       <div class="vcard" data-accent="comercial" data-search="Volume por Mês gráfico linha visão mensal modo estática dinâmica"><div class="vcard-head"><h3>Volume por Mês</h3><span class="pill">Gráfico</span></div><p>Sempre visível — não faz parte do toggle Sem/Dia. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[inicio_mes]</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
-      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por semana gráfico linha oculto modo estática dinâmica"><div class="vcard-head"><h3>Volume por semana</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Sem" (Semanal), via bookmark "2. Volume por Semana" — estado padrão da página. Ocupa o mesmo espaço do gráfico "por dia". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[semana_iso]</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
-      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por dia gráfico linha diária modo estática dinâmica"><div class="vcard-head"><h3>Volume por dia</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Dia" (Diária), via bookmark "2. Volume por Dia". Fica oculto por padrão até o bookmark ser acionado; ocupa o mesmo espaço do gráfico "por semana". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[data]</code><br>Ao passar o mouse: <code>nome_dia_semana_abrev</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por semana gráfico linha modo estática dinâmica"><div class="vcard-head"><h3>Volume por semana</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Sem" (Semanal) — estado padrão da página. Ocupa o mesmo espaço do gráfico "por dia". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[semana_iso]</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por dia gráfico linha diária modo estática dinâmica"><div class="vcard-head"><h3>Volume por dia</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Dia" (Diária); ocupa o mesmo espaço do gráfico "por semana". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[data]</code><br>Ao passar o mouse: <code>nome_dia_semana_abrev</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
     </div>
 
     <div class="group-label">Segmentações (filtros)</div>
@@ -409,7 +412,11 @@
       <div class="vcard" data-accent="comercial" data-search="Slicer Construtora segmentação"><div class="vcard-head"><h3>Construtora</h3><span class="pill">Segmentação</span></div><p>Filtra por incorporadora.</p></div>
       <div class="vcard" data-accent="comercial" data-search="Slicer Empreendimento segmentação"><div class="vcard-head"><h3>Empreendimento</h3><span class="pill">Segmentação</span></div><p>Filtra por empreendimento.</p></div>
       <div class="vcard" data-accent="comercial" data-search="Slicer Conclusiva segmentação"><div class="vcard-head"><h3>Conclusiva</h3><span class="pill">Segmentação</span></div><p>Filtra por resultado da análise (<code>fct_pastas_credito[conclusiva]</code>).</p></div>
-      <div class="vcard" data-accent="comercial" data-search="Slicer Período segmentação"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Duas versões, trocadas junto com o gráfico de linha: uma por ano/mês/semana do mês/dia (visão mensal e diária) e outra por ano ISO/semana ISO (visão semanal).</p></div>
+      <div class="vcard" data-accent="comercial" data-search="Slicer Período segmentação data criação created_data"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Duas versões, trocadas junto com o gráfico de linha: uma por ano/mês/semana do mês/dia (visão mensal e diária) e outra por ano ISO/semana ISO (visão semanal).</p><div class="fields">Filtra pela <strong>data de criação da pasta</strong> (<code>fct_pastas_credito[created_data]</code>) — não pela data de fechamento. Uma pasta criada em janeiro e fechada em fevereiro aparece no período de janeiro.</div></div>
+    </div>
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><strong>Importante:</strong> todos os gráficos desta página são filtrados pela <strong>data de criação da pasta</strong> (<code>fct_pastas_credito[created_data]</code>, relacionamento ativo com <code>dim_calendario</code>). Existe também <code>fct_pastas_credito[fechamento_data]</code>, com um relacionamento para <code>dim_calendario</code> já criado no modelo mas <strong>inativo</strong> — nenhuma medida o ativa (nenhum <code>USERELATIONSHIP</code> no modelo), então ele não influencia nenhum filtro ou gráfico hoje.</div>
     </div>
 
     <div class="group-label">Navegação</div>
@@ -486,7 +493,7 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
         <thead><tr><th>Medida</th><th>O que calcula</th><th>Onde é usada</th></tr></thead>
         <tbody>
           <tr data-search="Média Tempo Fazendo min medida"><td class="mname">Média Tempo Fazendo (min)</td><td>Média de minutos em "Fazendo", só para casos que passaram por essa etapa.<details class="dax"><summary>ver fórmula</summary><pre>AVERAGEX(FILTER(fct_cases, NOT ISBLANK([fazendo_entrada_data])), [tempo_total_fazendo_min])</pre></details></td><td><span class="used">Crédito · KPI</span></td></tr>
-          <tr data-search="Média Tempo Fazendo hh mm medida"><td class="mname">Média Tempo Fazendo (hh:mm)</td><td>Mesma média, formatada em horas:minutos.</td><td><span class="used">Crédito · tabela de tempos (oculta)</span></td></tr>
+          <tr data-search="Média Tempo Fazendo hh mm medida"><td class="mname">Média Tempo Fazendo (hh:mm)</td><td>Mesma média, formatada em horas:minutos.</td><td><span class="used">Crédito · tabela de tempos</span></td></tr>
           <tr data-search="Mediana Tempo Fazendo min medida"><td class="mname">Mediana Tempo Fazendo (min)</td><td>Mediana de minutos em "Fazendo" — menos sensível a outliers.</td><td><span class="used">Crédito · KPI</span></td></tr>
           <tr data-search="Mediana Tempo Fazendo hh mm medida"><td class="mname">Mediana Tempo Fazendo (hh:mm)</td><td>Mesma mediana, formatada em horas:minutos.</td><td><span class="used">Crédito · gráfico "Mediana Tempo Fazendo"</span></td></tr>
           <tr data-search="Tempo Fazendo min medida"><td class="mname">Tempo Fazendo (min)</td><td>Soma bruta de <code>tempo_total_fazendo_min</code>.</td><td><span class="unused">não usada nos visuais atuais</span></td></tr>
@@ -580,10 +587,6 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
     </div>
 
     <div class="group-label">Auxiliares</div>
-    <div class="tbl-card" data-search="última atualização do painel Ultima_Atualizacao">
-      <div class="tbl-card-head"><span class="tname-friendly">Última atualização do painel</span><code class="tname-sub">Ultima_Atualizacao</code><span class="badge badge-util">Auxiliar</span><span class="unused">card oculto na Capa</span></div>
-      <p class="desc">Guarda a data e hora em que o Power BI Desktop atualizou o arquivo pela última vez. Gerada automaticamente — não vem do Salesforce. Alimentaria o card "Última Atualização (BI)" na Capa, hoje oculto (o card visível usa a medida <code>última atualização</code>, baseada em <code>fct_cases[synced_at]</code>).</p>
-    </div>
     <div class="tbl-card" data-search="fórmulas de cálculo _medidas_qtd_credito _medidas_qtd_comercial _medidas_tempo">
       <div class="tbl-card-head"><span class="tname-friendly">Fórmulas de cálculo</span><code class="tname-sub">_medidas_qtd_credito · _medidas_qtd_comercial · _medidas_tempo</code><span class="badge badge-util">Auxiliar</span></div>
       <p class="desc">Não guardam nenhum dado — servem só para organizar as fórmulas usadas nos gráficos, detalhadas na seção <a href="#medidas">Medidas</a>, mais acima.</p>
