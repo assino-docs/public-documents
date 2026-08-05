@@ -1,0 +1,135 @@
+<title>Guia de Negócio — Consultas de Restrição</title>
+<style>
+:root{color-scheme:light dark;--bg:#ffffff;--fg:#1c1e21;--muted:#5b6067;--card:#f5f6f8;--border:#dde1e6;--accent:#0a5fb4;--verde:#B7E1CD;--laranja:#FCE5CD;--vermelho:#F4CCCC;--verdefg:#0f3d24;--laranjafg:#5c3600;--vermelhofg:#6e1414}
+@media (prefers-color-scheme: dark){:root{--bg:#14161a;--fg:#e8e9ec;--muted:#a2a8b0;--card:#1e2128;--border:#2c3038;--accent:#6fb3ff}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6;max-width:920px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+h1{font-size:1.9rem;margin-bottom:.3rem}
+h2{font-size:1.35rem;margin-top:3rem;padding-bottom:.4rem;border-bottom:2px solid var(--border);color:var(--accent)}
+h3{font-size:1.05rem;margin-top:1.8rem}
+.lead{color:var(--muted);font-size:1.05rem;margin-top:.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.3rem;margin:1rem 0}
+.badge{display:inline-block;font-size:.75rem;font-weight:600;padding:.15rem .55rem;border-radius:999px;margin-right:.4rem}
+.b-verde{background:var(--verde);color:var(--verdefg)}
+.b-laranja{background:var(--laranja);color:var(--laranjafg)}
+.b-vermelho{background:var(--vermelho);color:var(--vermelhofg)}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.95rem}
+th,td{text-align:left;padding:.55rem .7rem;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em}
+.pill{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.15rem .5rem;font-size:.9rem;margin:.15rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+.note{border-left:4px solid var(--accent);padding:.6rem 1rem;background:var(--card);border-radius:0 8px 8px 0;margin:1rem 0}
+.muted{color:var(--muted)}
+.swatch{display:inline-block;width:.9em;height:.9em;border-radius:3px;vertical-align:middle;margin-right:.3rem;border:1px solid var(--border)}
+code{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:.1rem .35rem;font-size:.85em}
+.btn-mock{display:inline-flex;align-items:center;gap:.4rem;background:var(--accent);color:#fff;padding:.4rem .9rem;border-radius:6px;font-size:.9rem;font-weight:600}
+footer{margin-top:4rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem}
+</style>
+
+<h1>Consultas de Restrição — Guia para quem usa o painel</h1>
+<p class="lead">Este guia explica, em linguagem simples, o que o painel <strong>Consultas de Restrição</strong> mostra e como interpretar cada número e cada cor. Não é preciso conhecer Power BI para entender — o objetivo aqui é explicar o significado de negócio de cada tela.</p>
+
+<p>Em resumo, este dashboard acompanha, para cada código de cliente, quantas <strong>pesquisas de restrição</strong> foram realizadas e quantos <strong>produtos</strong> (contratos/operações) foram vendidos, mês a mês e semana a semana. A partir dessas duas contagens, o painel calcula se o volume de pesquisas está dentro do limite esperado para a quantidade de produtos vendidos, sinalizando com cores quando esse limite está sendo ultrapassado.</p>
+
+<h2>1. O que conta como "Pesquisa" e o que conta como "Consulta/Produto"</h2>
+
+<p>O painel separa os registros recebidos em dois grupos, de acordo com o tipo de serviço realizado:</p>
+
+<div class="grid2">
+<div class="card">
+<h3 style="margin-top:0">Conta como <span class="b-verde badge">Pesquisa</span></h3>
+<p class="pill">PESQUISA CADASTRAL</p>
+<p class="muted" style="font-size:.9rem">Sempre contabilizada, sem nenhuma restrição de data.</p>
+<p class="pill">SIPES OPORT NEGOCIOS</p>
+<p class="muted" style="font-size:.9rem">Contabilizada apenas a partir de <strong>01/06/2026</strong>. Ou seja: a partir de junho de 2026, o serviço "SIPES OPORT NEGOCIOS" passou a entrar na contagem de pesquisas. Qualquer registro desse tipo com data anterior a 01/06/2026 é ignorado e não entra em nenhuma contagem do painel.</p>
+</div>
+<div class="card">
+<h3 style="margin-top:0">Conta como <span class="b-laranja badge">Consulta/Produto</span></h3>
+<p>Todos os registros recebidos na base de produtos contam automaticamente como "produto vendido" — não existe filtro por tipo de serviço nessa base. Cada linha da base de produtos representa uma venda/operação realizada pelo código de cliente.</p>
+</div>
+</div>
+
+<p>Essa mesma regra (o critério de "PESQUISA CADASTRAL" sempre válido, e "SIPES OPORT NEGOCIOS" válido só a partir de junho/2026) é aplicada de forma idêntica para todos os 8 códigos de cliente que alimentam o painel.</p>
+
+<h2>2. Como os números são calculados</h2>
+
+<table>
+<tr><th>Indicador</th><th>O que representa</th></tr>
+<tr>
+<td><strong>Pesquisas</strong></td>
+<td>Quantidade total de pesquisas realizadas no período (soma dos registros que se enquadram como "Pesquisa Cadastral" ou, a partir de junho/2026, "SIPES Oport Negócios"), para o código de cliente e mês selecionados.</td>
+</tr>
+<tr>
+<td><strong>Produtos</strong></td>
+<td>Quantidade total de produtos/operações registrados no período para o código de cliente e mês selecionados.</td>
+</tr>
+<tr>
+<td><strong>Limite de Pesquisas</strong></td>
+<td>É o teto de pesquisas permitido para o volume de produtos vendidos: <strong>quantidade de produtos × 31</strong>. Na prática, isso equivale a permitir até 31 pesquisas para cada produto vendido (uma média de uma pesquisa por dia do mês por produto).</td>
+</tr>
+<tr>
+<td><strong>Pesquisas/Produtos</strong></td>
+<td>É a razão entre o total de pesquisas e o total de produtos no período (quantas pesquisas foram feitas, em média, para cada produto vendido). Quanto maior esse número, mais pesquisas estão sendo feitas em relação ao volume de produtos.</td>
+</tr>
+</table>
+
+<div class="note">
+<strong>O que acontece quando não há produtos ou não há pesquisas?</strong><br>
+Se não houver nenhum produto registrado no período (contexto sem dados de produtos), o indicador <em>Pesquisas/Produtos</em> passa a exibir diretamente a quantidade de pesquisas, evitando um erro de divisão por zero — nesse caso específico o número exibido deixa de representar uma "razão" real e passa a mostrar o próprio total de pesquisas. Se não houver nenhuma pesquisa registrada, o indicador é exibido como <strong>0</strong>, independentemente da quantidade de produtos.
+</div>
+
+<h2>3. As 4 telas principais</h2>
+
+<h3>1. Pesquisas</h3>
+<p>Tabela que cruza <strong>Código do cliente</strong> (linhas) com <strong>Mês/Ano</strong> (colunas), mostrando em cada célula o total de pesquisas realizadas por aquele código naquele mês. Serve para acompanhar a evolução mensal do volume de pesquisas de cada cliente.</p>
+
+<h3>2. Produtos</h3>
+<p>Mesma estrutura da anterior — <strong>Código do cliente</strong> nas linhas e <strong>Mês/Ano</strong> nas colunas — mas mostrando o total de produtos vendidos/registrados por cada código em cada mês.</p>
+
+<h3>3. Pesquisas/Produtos por mês</h3>
+<p>Também cruza <strong>Código do cliente</strong> com <strong>Mês/Ano</strong>, mas em vez do total bruto, mostra a razão entre pesquisas e produtos daquele mês (ver explicação do indicador acima). É essa tabela que recebe a coloração condicional descrita na seção 4 — permite identificar rapidamente, mês a mês, quais códigos estão com uso de pesquisas acima do esperado.</p>
+
+<h3>4. Pesquisas/Produtos por semana</h3>
+<p>Tabela mais detalhada, com uma linha por combinação de <strong>Código</strong> e <strong>Semana do ano</strong> (ordenada da semana mais recente para a mais antiga), trazendo lado a lado: quantidade de <strong>Pesquisas</strong>, quantidade de <strong>Produtos</strong> e a razão <strong>Pesquisas/Produtos</strong> daquela semana. Permite um acompanhamento mais granular (semanal) do mesmo indicador visto na tabela mensal.</p>
+
+<h2>4. Como funciona a coloração das células</h2>
+<p>A coloração aparece em duas telas — a tabela <strong>"Pesquisas/Produtos por mês"</strong> e a tabela <strong>"Pesquisas/Produtos por semana"</strong> — e é aplicada sobre o valor do indicador <strong>Pesquisas/Produtos</strong>. A regra funciona em três faixas:</p>
+
+<table>
+<tr><th>Cor</th><th>Faixa do indicador Pesquisas/Produtos</th><th>Leitura de negócio</th></tr>
+<tr>
+<td><span class="swatch" style="background:#B7E1CD"></span><span class="b-verde badge">Verde</span></td>
+<td>de 0 até 15</td>
+<td>Uso saudável — volume de pesquisas bem abaixo do limite permitido por produto.</td>
+</tr>
+<tr>
+<td><span class="swatch" style="background:#FCE5CD"></span><span class="b-laranja badge">Laranja</span></td>
+<td>de 15 até 31 (aprox. 30,9)</td>
+<td>Uso em atenção — o volume de pesquisas está se aproximando do limite de 31 por produto, mas ainda dentro dele.</td>
+</tr>
+<tr>
+<td><span class="swatch" style="background:#F4CCCC"></span><span class="b-vermelho badge">Vermelho</span></td>
+<td>acima de 31</td>
+<td>Limite ultrapassado — o código de cliente está fazendo mais pesquisas do que o permitido para a quantidade de produtos vendidos (mais de 31 pesquisas por produto).</td>
+</tr>
+</table>
+
+<p>Em outras palavras: <strong>a célula fica vermelha exatamente quando o total de pesquisas ultrapassa o limite contratado por produto (31 pesquisas por produto)</strong>; fica laranja quando está próxima desse limite (entre 15 e 31); e fica verde quando está confortavelmente abaixo (até 15). Essa é a mesma regra, com as mesmas cores, nas duas tabelas (mensal e semanal).</p>
+
+<div class="note">As demais tabelas do painel ("Pesquisas" e "Produtos", com os totais brutos) não têm nenhuma coloração condicional — usam apenas as cores padrão do tema visual do relatório.</div>
+
+<h2>5. Gráficos escondidos atrás dos botões</h2>
+<p>A tela principal tem dois botões que revelam gráficos adicionais, normalmente ocultos para deixar a tela mais limpa:</p>
+
+<div class="card">
+<p><span class="btn-mock">Pesquisas x Limite de Pesquisas</span></p>
+<p>Ao clicar, aparece um <strong>gráfico de colunas</strong> comparando, mês a mês, o total de <strong>Pesquisas</strong> realizadas com o <strong>Limite de Pesquisas</strong> permitido (lembrando: produtos × 31). É uma forma visual de enxergar rapidamente em quais meses o volume de pesquisas ficou acima ou abaixo do teto permitido. Um botão de seta sobre o próprio gráfico permite escondê-lo novamente.</p>
+</div>
+
+<div class="card">
+<p><span class="btn-mock">Gráfico de Pesquisas/Produtos por semana</span></p>
+<p>Ao clicar, aparece um <strong>gráfico de colunas</strong> mostrando a evolução do indicador <strong>Pesquisas/Produtos</strong> ao longo das semanas do ano — a versão visual (em gráfico) do mesmo dado que já aparece na tabela "Pesquisas/Produtos por semana", útil para identificar tendências e picos de uso ao longo do tempo. Também pode ser ocultado novamente por um botão de seta.</p>
+</div>
+
+<footer>Documentação de negócio do painel "Consultas de Restrição" — foco em uso e interpretação, sem detalhes técnicos de modelagem. Para informações de manutenção do modelo, consulte a documentação técnica interna.</footer>
