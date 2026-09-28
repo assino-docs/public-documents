@@ -341,13 +341,14 @@
         <table class="data">
           <thead><tr><th>Demanda</th><th>Situação da análise</th><th>Resultado</th></tr></thead>
           <tbody>
-            <tr><td>Contém "Nova análise"</td><td>Aprovada, Reprovada, Condicionada ou Exceção</td><td><span class="pill-result conclusiva">Conclusiva</span></td></tr>
-            <tr><td>Contém "Nova análise"</td><td>Com pendência</td><td><span class="pill-result naoconclusiva">Não Conclusiva</span></td></tr>
-            <tr><td>Qualquer outra demanda (que não é "Nova análise")</td><td>Qualquer</td><td><span class="pill-result outros">Outros</span></td></tr>
+            <tr><td>Contém "Nova análise" ou é "Análise Rápida", análise ainda em andamento (fase diferente de Concluído)</td><td>Qualquer</td><td><span class="pill-result outros">Não Concluída</span></td></tr>
+            <tr><td>Contém "Nova análise" ou é "Análise Rápida", fase Concluído</td><td>Aprovada, Reprovada, Condicionada, Exceção ou Parcela Possível</td><td><span class="pill-result conclusiva">Conclusiva</span></td></tr>
+            <tr><td>Contém "Nova análise" ou é "Análise Rápida", fase Concluído</td><td>Com pendência</td><td><span class="pill-result naoconclusiva">Não Conclusiva</span></td></tr>
+            <tr><td>Qualquer outra demanda</td><td>Qualquer</td><td><span class="pill-result outros">Outros</span></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="rule-footnote">O indicador <strong>Total Conclusivas</strong> mostra o % de Conclusiva sobre o total de Conclusiva + Não Conclusiva — os casos "Outros" não entram nessa conta.</p>
+      <p class="rule-footnote">O indicador <strong>Total Conclusivas</strong> mostra o % de Conclusiva sobre o total de Conclusiva + Não Conclusiva — os casos "Outros" e "Não Concluída" não entram nessa conta. A demanda "Análise Rápida" é tratada igual às "Nova análise de crédito…" (categoria Análise de Crédito).</p>
     </div>
 
     <div class="group-label">KPIs</div>
@@ -394,16 +395,17 @@
   <section id="pagina-comercial">
     <div class="page-head" data-accent="comercial">
       <h1>Página · Comercial <span class="page-tag" data-accent="comercial">aba 3</span></h1>
-      <p class="lede" style="margin-top:6px;margin-bottom:0;">Foco no volume de pastas/análises de crédito por regional, incorporadora e tempo, com base em <code>fct_pastas_credito</code>. O gráfico "Volume por Mês" fica sempre visível; os gráficos "por semana" e "por dia" dividem o mesmo espaço e alternam via botões <strong>Sem / Dia</strong> (bookmarks). Um segundo toggle, <strong>Modo: Estática / Dinâmica</strong>, troca a medida usada pelos cinco gráficos (os três de linha e os dois de barra, "Volume por Regional" e "Volume por Incorporadora") ao mesmo tempo, sem precisar duplicar visuais nem bookmarks.</p>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Foco no volume de pastas/análises de crédito por regional, incorporadora e tempo, com base em <code>fct_pastas_credito</code>. O gráfico "Volume por Mês" fica sempre visível; os gráficos "por semana" e "por dia" dividem o mesmo espaço e alternam via botões <strong>Sem / Dia</strong> (bookmarks). Um segundo seletor, <strong>Modo: Dinâmica / Estática / 1ª Análise</strong>, troca a medida usada pelos seis gráficos (os três de linha e os três de barra, "Volume por Regional", "Volume por Incorporadora" e "% Conclusivas") ao mesmo tempo, sem precisar duplicar visuais nem bookmarks. A base inclui também as análises ainda em andamento (todas as fases, exceto Improdutivo), que aparecem com resultado <strong>Não Concluída</strong>.</p>
     </div>
 
     <div class="group-label">Gráficos</div>
     <div class="card-grid">
-      <div class="vcard" data-accent="comercial" data-search="Volume por Regional gráfico barras modo estática dinâmica"><div class="vcard-head"><h3>Volume por Regional</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por regional. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Categoria: <code>dim_construtoras[regional]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Últimas Analises (modo)</code></div></div>
-      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora gráfico barras modo estática dinâmica"><div class="vcard-head"><h3>Volume por Incorporadora</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por incorporadora. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Categoria: <code>dim_construtoras[nome]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Últimas Analises (modo)</code></div></div>
-      <div class="vcard" data-accent="comercial" data-search="Volume por Mês gráfico linha visão mensal modo estática dinâmica"><div class="vcard-head"><h3>Volume por Mês</h3><span class="pill">Gráfico</span></div><p>Sempre visível — não faz parte do toggle Sem/Dia. Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[inicio_mes]</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
-      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por semana gráfico linha modo estática dinâmica"><div class="vcard-head"><h3>Volume por semana</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Sem" (Semanal) — estado padrão da página. Ocupa o mesmo espaço do gráfico "por dia". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[semana_iso]</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
-      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por dia gráfico linha diária modo estática dinâmica"><div class="vcard-head"><h3>Volume por dia</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Dia" (Diária); ocupa o mesmo espaço do gráfico "por semana". Os valores seguem o toggle "Modo: Estática/Dinâmica".</p><div class="fields">Eixo: <code>dim_calendario[data]</code><br>Ao passar o mouse: <code>nome_dia_semana_abrev</code><br>Valores: <code>Últimas Analises (modo)</code> e <code>% Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Regional gráfico barras modo estática dinâmica 1ª análise"><div class="vcard-head"><h3>Volume por Regional</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por regional. Os valores seguem o seletor "Modo" (Dinâmica / Estática / 1ª Análise).</p><div class="fields">Categoria: <code>dim_construtoras[regional]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Pastas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora gráfico barras modo estática dinâmica 1ª análise"><div class="vcard-head"><h3>Volume por Incorporadora</h3><span class="pill">Gráfico</span></div><p>Volume de pastas avaliadas por incorporadora. Os valores seguem o seletor "Modo" (Dinâmica / Estática / 1ª Análise).</p><div class="fields">Categoria: <code>dim_construtoras[nome]</code><br>Cor: <code>fct_pastas_credito[conclusiva]</code><br>Valor: <code>Pastas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="% Conclusivas gráfico barras mês modo estática dinâmica 1ª análise"><div class="vcard-head"><h3>% Conclusivas</h3><span class="pill">Gráfico</span></div><p>% de pastas Conclusivas sobre Conclusivas + Não Conclusivas, mês a mês. Os valores seguem o seletor "Modo" (Dinâmica / Estática / 1ª Análise).</p><div class="fields">Eixo: <code>dim_calendario[nome_mes]</code><br>Valor: <code>% Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Mês gráfico linha visão mensal modo estática dinâmica 1ª análise"><div class="vcard-head"><h3>Volume por Mês</h3><span class="pill">Gráfico</span></div><p>Sempre visível — não faz parte do toggle Sem/Dia. Os valores seguem o seletor "Modo" (Dinâmica / Estática / 1ª Análise).</p><div class="fields">Eixo: <code>dim_calendario[inicio_mes]</code><br>Valores: <code>Pastas (modo)</code> e <code>Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por semana gráfico linha modo estática dinâmica 1ª análise"><div class="vcard-head"><h3>Volume por semana</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Sem" (Semanal) — estado padrão da página. Ocupa o mesmo espaço do gráfico "por dia". Os valores seguem o seletor "Modo" (Dinâmica / Estática / 1ª Análise).</p><div class="fields">Eixo: <code>dim_calendario[semana_iso]</code><br>Valores: <code>Pastas (modo)</code> e <code>Conclusivas (modo)</code></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Volume por Incorporadora por dia gráfico linha diária modo estática dinâmica 1ª análise"><div class="vcard-head"><h3>Volume por dia</h3><span class="pill">Gráfico</span></div><p>Aparece ao clicar no botão "Dia" (Diária); ocupa o mesmo espaço do gráfico "por semana". Os valores seguem o seletor "Modo" (Dinâmica / Estática / 1ª Análise).</p><div class="fields">Eixo: <code>dim_calendario[data]</code><br>Ao passar o mouse: <code>nome_dia_semana_abrev</code><br>Valores: <code>Pastas (modo)</code> e <code>Conclusivas (modo)</code></div></div>
     </div>
 
     <div class="group-label">Segmentações (filtros)</div>
@@ -411,7 +413,7 @@
       <div class="vcard" data-accent="comercial" data-search="Slicer Regional segmentação"><div class="vcard-head"><h3>Regional</h3><span class="pill">Segmentação</span></div><p>Filtra por regional.</p></div>
       <div class="vcard" data-accent="comercial" data-search="Slicer Construtora segmentação"><div class="vcard-head"><h3>Construtora</h3><span class="pill">Segmentação</span></div><p>Filtra por incorporadora.</p></div>
       <div class="vcard" data-accent="comercial" data-search="Slicer Empreendimento segmentação"><div class="vcard-head"><h3>Empreendimento</h3><span class="pill">Segmentação</span></div><p>Filtra por empreendimento.</p></div>
-      <div class="vcard" data-accent="comercial" data-search="Slicer Conclusiva segmentação"><div class="vcard-head"><h3>Conclusiva</h3><span class="pill">Segmentação</span></div><p>Filtra por resultado da análise (<code>fct_pastas_credito[conclusiva]</code>).</p></div>
+      <div class="vcard" data-accent="comercial" data-search="Slicer Conclusiva segmentação"><div class="vcard-head"><h3>Conclusiva</h3><span class="pill">Segmentação</span></div><p>Lista suspensa que filtra por resultado da análise (<code>fct_pastas_credito[conclusiva]</code>). Os valores aparecem sempre na ordem <strong>Conclusiva → Não Conclusiva → Não Concluída</strong>, definida pela coluna auxiliar <code>conclusiva_ordem</code> ("Classificar por coluna").</p></div>
       <div class="vcard" data-accent="comercial" data-search="Slicer Período segmentação data criação created_data"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Duas versões, trocadas junto com o gráfico de linha: uma por ano/mês/semana do mês/dia (visão mensal e diária) e outra por ano ISO/semana ISO (visão semanal).</p><div class="fields">Filtra pela <strong>data de criação da pasta</strong> (<code>fct_pastas_credito[created_data]</code>) — não pela data de fechamento. Uma pasta criada em janeiro e fechada em fevereiro aparece no período de janeiro.</div></div>
     </div>
     <div class="note-box">
@@ -422,7 +424,7 @@
     <div class="group-label">Navegação</div>
     <div class="card-grid">
       <div class="vcard" data-accent="comercial" data-search="Botões Diária Semanal navegação visão bookmark sem dia"><div class="vcard-head"><h3>Dia / Sem</h3><span class="pill">Navegação</span></div><p>Alternam, via bookmarks, qual gráfico de linha e qual slicer de período ficam visíveis (diário ou semanal — o semanal é o estado padrão da página).</p></div>
-      <div class="vcard" data-accent="comercial" data-search="Modo Estática Dinâmica toggle slicer segmentação medida"><div class="vcard-head"><h3>Modo: Estática / Dinâmica</h3><span class="pill">Segmentação</span></div><p>Troca, ao mesmo tempo, a medida usada pelos cinco gráficos (os três de linha — Mês, semana e dia — e os dois de barra — Volume por Regional e Volume por Incorporadora). Diferente do Dia/Sem, não é um bookmark — é um slicer "Basic" ligado à tabela auxiliar desconectada <code>Modo Análise[Modo]</code>, então funciona de forma independente do toggle Sem/Dia (clicar em um não afeta o outro).</p><div class="fields">Medidas roteadoras: <code>Últimas Analises (modo)</code>, <code>% Conclusivas (modo)</code><br>Padrão se nada for selecionado: <strong>Dinâmica</strong></div></div>
+      <div class="vcard" data-accent="comercial" data-search="Modo Estática Dinâmica 1ª Análise primeira toggle slicer segmentação medida"><div class="vcard-head"><h3>Modo: Dinâmica / Estática / 1ª Análise</h3><span class="pill">Segmentação</span></div><p>Troca, ao mesmo tempo, a medida usada pelos seis gráficos (os três de linha — Mês, semana e dia — e os três de barra — Volume por Regional, Volume por Incorporadora e % Conclusivas). <strong>Dinâmica</strong>: última análise de cada pasta. <strong>Estática</strong>: última análise de cada pasta dentro de cada mês. <strong>1ª Análise</strong>: cada pasta uma vez, na data da 1ª análise; a pasta conta como Conclusiva se tiver alguma análise conclusiva, mesmo que numa reanálise posterior. Diferente do Dia/Sem, não é um bookmark — é um slicer "Dropdown" ligado à tabela auxiliar desconectada <code>Modo Análise[Modo]</code>, então funciona de forma independente do toggle Sem/Dia (clicar em um não afeta o outro).</p><div class="fields">Medidas roteadoras: <code>Pastas (modo)</code>, <code>Conclusivas (modo)</code>, <code>% Conclusivas (modo)</code><br>Padrão: <strong>Dinâmica</strong></div></div>
       <div class="vcard" data-accent="comercial" data-search="Botão Home navegação"><div class="vcard-head"><h3>Botão Home</h3><span class="pill">Navegação</span></div><p>Volta para a página Capa.</p></div>
     </div>
 
@@ -433,7 +435,7 @@
   <!-- ═══════════════ MEDIDAS ═══════════════ -->
   <section id="medidas">
     <h1>Medidas</h1>
-    <p class="lede">20 medidas DAX, organizadas em três tabelas "de apoio" (<code>_medidas_qtd_credito</code>, <code>_medidas_qtd_comercial</code> e <code>_medidas_tempo</code>) que não guardam dados — só hospedam as fórmulas. Foram removidas as medidas e colunas calculadas que não apareciam em nenhum visual nem eram usadas por outra medida. Clique em "ver fórmula" para o DAX completo.</p>
+    <p class="lede">31 medidas DAX, organizadas em três tabelas "de apoio" (<code>_medidas_qtd_credito</code>, <code>_medidas_qtd_comercial</code> e <code>_medidas_tempo</code>) que não guardam dados — só hospedam as fórmulas. Foram removidas as medidas e colunas calculadas que não apareciam em nenhum visual nem eram usadas por outra medida. Clique em "ver fórmula" para o DAX completo.</p>
 
     <div class="measure-group-title">_medidas_qtd_credito — página Crédito</div>
     <div class="measure-group-sub">Baseadas em <code>fct_cases</code> (análises de crédito).</div>
@@ -460,30 +462,36 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
         <thead><tr><th>Medida</th><th>O que calcula</th><th>Onde é usada</th></tr></thead>
         <tbody>
           <tr data-search="Total Conclusivas medida comercial"><td class="mname">Total Conclusivas</td><td>Quantidade de pastas com <code>conclusiva = "Conclusiva"</code>.</td><td><span class="unused">não usada nos visuais atuais</span></td></tr>
-          <tr data-search="Últimas Analises estática medida"><td class="mname">Últimas Analises (estática)</td><td>Conta a última análise de cada pasta dentro do mês fechado (<code>flag_ultima_analise_mes</code>).</td><td><span class="used">Comercial · indiretamente via "Últimas Analises (modo)" quando Modo = Estática</span></td></tr>
-          <tr data-search="Ultimas Analises dinâmica medida"><td class="mname">Últimas Analises (dinâmica)</td><td>Conta a última análise de cada pasta até a data mais recente disponível (<code>flag_ultima_analise</code>), acompanhando o filtro de período selecionado.</td><td><span class="used">Comercial · indiretamente via "Últimas Analises (modo)" quando Modo = Dinâmica (padrão)</span></td></tr>
-          <tr data-search="Últimas Analises modo medida toggle switch"><td class="mname">Últimas Analises (modo)</td><td>Escolhe entre as duas medidas acima conforme o slicer "Modo: Estática/Dinâmica" (<code>Modo Análise[Modo]</code>) — se nada estiver selecionado, assume "Dinâmica".<details class="dax"><summary>ver fórmula</summary><pre>SWITCH(
+          <tr data-search="Últimas Analises estática medida"><td class="mname">Últimas Analises (estática)</td><td>Conta a última análise de cada pasta dentro do mês fechado (<code>flag_ultima_analise_mes</code>).</td><td><span class="used">Comercial · indiretamente via "Pastas (modo)" quando Modo = Estática</span></td></tr>
+          <tr data-search="Ultimas Analises dinâmica medida"><td class="mname">Últimas Analises (dinâmica)</td><td>Conta a última análise de cada pasta até a data mais recente disponível (<code>flag_ultima_analise</code>), acompanhando o filtro de período selecionado.</td><td><span class="used">Comercial · indiretamente via "Pastas (modo)" quando Modo = Dinâmica (padrão)</span></td></tr>
+          <tr data-search="Primeiras Analises primeira 1ª análise medida"><td class="mname">Primeiras Analises</td><td>Conta cada pasta uma vez, na data da 1ª análise (<code>flag_primeira_analise</code>).</td><td><span class="used">Comercial · indiretamente via "Pastas (modo)" quando Modo = 1ª Análise</span></td></tr>
+          <tr data-search="Pastas modo medida toggle switch Últimas Analises"><td class="mname">Pastas (modo)</td><td>Escolhe entre as três medidas acima conforme o slicer "Modo" (<code>Modo Análise[Modo]</code>) — se nada estiver selecionado, assume "Dinâmica".<details class="dax"><summary>ver fórmula</summary><pre>SWITCH(
     SELECTEDVALUE('Modo Análise'[Modo], "Dinâmica"),
     "Estática", [Últimas Analises (estática)],
-    "Dinâmica", [Últimas Analises (dinâmica)]
+    "Dinâmica", [Últimas Analises (dinâmica)],
+    "1ª Análise", [Primeiras Analises]
 )</pre></details></td><td><span class="used">Comercial · gráficos "Volume por Mês/semana/dia" e "Volume por Regional/Incorporadora"</span></td></tr>
-          <tr data-search="Conclusivas dinâmica medida percentual"><td class="mname">% Conclusivas (dinâmica)</td><td>Apesar do nome, é uma <strong>contagem</strong> (não uma divisão): quantidade de últimas análises "dinâmicas" com resultado Conclusiva.</td><td><span class="used">Comercial · indiretamente via "% Conclusivas (modo)" quando Modo = Dinâmica (padrão)</span></td></tr>
-          <tr data-search="Conclusivas estática medida percentual"><td class="mname">% Conclusivas (estática)</td><td>Igual à anterior, mas sobre a última análise fechada do mês (<code>flag_ultima_analise_mes</code>) — também é uma contagem, não uma %.</td><td><span class="used">Comercial · indiretamente via "% Conclusivas (modo)" quando Modo = Estática</span></td></tr>
-          <tr data-search="Conclusivas modo medida toggle switch"><td class="mname">% Conclusivas (modo)</td><td>Mesma lógica de "Últimas Analises (modo)", mas para a contagem de conclusivas.<details class="dax"><summary>ver fórmula</summary><pre>SWITCH(
+          <tr data-search="Conclusivas dinâmica estática medida"><td class="mname">Conclusivas (dinâmica) / (estática)</td><td>Pastas com resultado Conclusiva na última análise (dinâmica: <code>flag_ultima_analise</code>; estática: <code>flag_ultima_analise_mes</code>).</td><td><span class="used">Comercial · indiretamente via "Conclusivas (modo)" e "% Conclusivas (modo)"</span></td></tr>
+          <tr data-search="Não Conclusiva dinâmica estática medida"><td class="mname">Não Conclusiva (dinâmica) / (estática)</td><td>Mesmo critério das anteriores, para resultado Não Conclusiva.</td><td><span class="used">Comercial · indiretamente via "% Conclusivas (modo)"</span></td></tr>
+          <tr data-search="Conclusivas primeira 1ª análise USERELATIONSHIP medida"><td class="mname">Conclusivas (primeira)</td><td>Pastas na data da 1ª análise que têm <strong>alguma</strong> análise Conclusiva, em qualquer data: uma reanálise posterior que resolve a pasta conta no dia da pasta. Usa o relacionamento inativo <code>primeira_data_criacao</code> → calendário.<details class="dax"><summary>ver fórmula</summary><pre>CALCULATE(
+    DISTINCTCOUNT('analytics fct_pastas_credito'[chave]),
+    'analytics fct_pastas_credito'[conclusiva] = "Conclusiva",
+    USERELATIONSHIP('analytics fct_pastas_credito'[primeira_data_criacao], 'analytics dim_calendario'[data])
+)</pre></details></td><td><span class="used">Comercial · indiretamente via "Conclusivas (modo)" e "% Conclusivas (modo)" quando Modo = 1ª Análise</span></td></tr>
+          <tr data-search="Não Conclusiva primeira 1ª análise medida"><td class="mname">Não Conclusiva (primeira)</td><td>Pastas na data da 1ª análise com alguma análise Não Conclusiva e <strong>nenhuma</strong> Conclusiva. Pasta só com análise em andamento não entra em nenhuma das duas.</td><td><span class="used">Comercial · indiretamente via "% Conclusivas (modo)" quando Modo = 1ª Análise</span></td></tr>
+          <tr data-search="Conclusivas modo medida toggle switch"><td class="mname">Conclusivas (modo)</td><td>Mesma lógica de "Pastas (modo)", para a contagem de conclusivas.<details class="dax"><summary>ver fórmula</summary><pre>SWITCH(
     SELECTEDVALUE('Modo Análise'[Modo], "Dinâmica"),
-    "Estática", [% Conclusivas (estática)],
-    "Dinâmica", [% Conclusivas (dinâmica)]
+    "Estática", [Conclusivas (estática)],
+    "Dinâmica", [Conclusivas (dinâmica)],
+    "1ª Análise", [Conclusivas (primeira)]
 )</pre></details></td><td><span class="used">Comercial · gráficos "Volume por Mês/semana/dia"</span></td></tr>
+          <tr data-search="Conclusivas modo medida percentual"><td class="mname">% Conclusivas (modo)</td><td>Conclusivas ÷ (Conclusivas + Não Conclusivas) no modo selecionado.</td><td><span class="used">Comercial · gráfico "% Conclusivas"</span></td></tr>
         </tbody>
       </table>
     </div>
     <div class="note-box">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-      <div>As medidas <strong>"% Conclusivas (dinâmica)"</strong>, <strong>"% Conclusivas (estática)"</strong> e <strong>"% Conclusivas (modo)"</strong> têm "%" no nome mas retornam uma contagem de linhas, não um percentual — vale renomear ou corrigir a fórmula para evitar confusão em quem for interpretar o dashboard.</div>
-    </div>
-    <div class="note-box">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-      <div><strong>Modo Análise</strong> é uma tabela auxiliar desconectada (2 linhas: "Dinâmica"/"Estática", sem relacionamento com o resto do modelo). Ela só existe para alimentar o slicer "Modo: Estática/Dinâmica" e as duas medidas roteadoras acima.</div>
+      <div><strong>Modo Análise</strong> é uma tabela auxiliar desconectada (3 linhas: "Dinâmica"/"Estática"/"1ª Análise", sem relacionamento com o resto do modelo). Ela só existe para alimentar o slicer "Modo" e as três medidas roteadoras acima.</div>
     </div>
 
     <div class="measure-group-title">_medidas_tempo — tempo de execução</div>
@@ -514,13 +522,14 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
 
     <div class="tbl-card" data-search="casos fct_cases análises de crédito">
       <div class="tbl-card-head"><span class="tname-friendly">Casos</span><code class="tname-sub">analytics fct_cases</code><span class="badge badge-fato">Registro</span></div>
-      <p class="desc">Cada linha é <strong>uma análise de crédito (case)</strong> registrada no Salesforce. Não tem filtro nem remoção de duplicatas — se o mesmo processo ou a mesma pessoa aparecer em mais de uma análise, cada uma conta separadamente. É a base de toda a página Crédito.</p>
+      <p class="desc">Cada linha é <strong>uma análise de crédito (case)</strong> registrada no Salesforce, em qualquer fase exceto Improdutivo (inclui análises ainda em andamento). Não tem remoção de duplicatas — se o mesmo processo ou a mesma pessoa aparecer em mais de uma análise, cada uma conta separadamente. É a base de toda a página Crédito.</p>
       <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 análise de crédito</span><span class="chip"><strong>Fonte</strong> Salesforce</span></div>
       <div class="rel-row">Também traz dados de: <span class="chip rel">Analistas de crédito</span><span class="chip rel">Construtoras</span><span class="chip rel">Empreendimentos</span><span class="chip rel">Calendário</span></div>
       <details class="cols"><summary>ver colunas principais</summary><div class="col-list">
         <div><code>id, case_number, case_url, oportunidade_id</code><span>identificação do caso</span></div>
         <div><code>account_id, empreendimento_id, responsavel_id</code><span>a qual construtora, empreendimento e analista pertence</span></div>
         <div><code>fase, situacao_analise, conclusiva, categoria_demanda, demanda_principal, prioridade</code><span>classificação da análise</span></div>
+        <div><code>escopo_nova_analise</code><span>verdadeiro quando a demanda é "Nova análise…" ou "Análise Rápida"</span></div>
         <div><code>created_*, fazendo_entrada/saida_*, pausado_*, concluido_*, fechamento_*</code><span>data e hora de cada etapa do fluxo</span></div>
         <div><code>sla_min, sla_liquido_min, tempo_total_*_min, synced_at</code><span>tempos calculados por etapa, em minutos, e horário de sincronização</span></div>
       </div></details>
@@ -528,12 +537,13 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
 
     <div class="tbl-card" data-search="pastas de crédito fct_pastas_credito comercial análise por oportunidade última análise">
       <div class="tbl-card-head"><span class="tname-friendly">Pastas de crédito</span><code class="tname-sub">analytics fct_pastas_credito</code><span class="badge badge-fato">Registro</span></div>
-      <p class="desc">Uma linha por pasta/análise de crédito por oportunidade. Traz flags que identificam a <strong>última análise de cada pasta</strong> (geral e dentro do mês fechado), usadas para não contar a mesma pasta mais de uma vez nos gráficos. É a base da página Comercial.</p>
+      <p class="desc">Uma linha por pasta/análise de crédito por oportunidade. Traz flags que identificam a <strong>última análise de cada pasta</strong> (geral e dentro do mês fechado), usadas para não contar a mesma pasta mais de uma vez nos gráficos. Inclui análises em andamento (fase diferente de Concluído, resultado <strong>Não Concluída</strong>); quando a pasta tem uma análise em andamento, ela é a considerada "última análise". Entram as demandas "Nova análise…" e "Análise Rápida". É a base da página Comercial.</p>
       <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 pasta/análise</span><span class="chip"><strong>Fonte</strong> Salesforce, a partir dos casos</span></div>
       <div class="rel-row">Também traz dados de: <span class="chip rel">Construtoras</span><span class="chip rel">Empreendimentos</span><span class="chip rel">Calendário</span></div>
       <details class="cols"><summary>ver colunas</summary><div class="col-list">
-        <div><code>id, chave, proponente_1_cpf, account_id, empreendimento_id, cod_incorporadora, responsavel_id</code><span>identificação</span></div>
-        <div><code>situacao_analise, conclusiva, demanda_principal, qtd_analises</code><span>resultado e volume de análises da pasta</span></div>
+        <div><code>id, chave, proponente_1_cpf, proponente_1_id, oportunidade_id, account_id, nome_construtora, empreendimento_id, cod_incorporadora, responsavel_id</code><span>identificação</span></div>
+        <div><code>fase, situacao_analise, conclusiva, demanda_principal, qtd_analises</code><span>fase atual, resultado e volume de análises da pasta</span></div>
+        <div><code>conclusiva_ordem</code> <span class="pill" style="margin-left:4px;">Power Query</span><span>oculta; ordem de exibição de <code>conclusiva</code> (1 Conclusiva, 2 Não Conclusiva, 3 Não Concluída)</span></div>
         <div><code>flag_primeira_analise, flag_ultima_analise, flag_ultima_analise_mes, flag_ultima_conclusiva</code><span>marcações usadas pelas medidas "Últimas Analises"</span></div>
         <div><code>fechamento_*, created_*, primeira_data_criacao, sla_min, sla_liquido_min</code><span>tempo</span></div>
       </div></details>
@@ -561,10 +571,10 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
 
     <div class="tbl-card" data-search="empreendimentos dim_empreendimentos tem fato">
       <div class="tbl-card-head"><span class="tname-friendly">Empreendimentos</span><code class="tname-sub">analytics dim_empreendimentos</code><span class="badge badge-dim">Cadastro</span></div>
-      <p class="desc">Lista de empreendimentos, já com o nome da incorporadora dona de cada um.</p>
-      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 empreendimento</span><span class="chip"><strong>Fonte</strong> Salesforce</span></div>
+      <p class="desc">Lista de empreendimentos, já com o nome da incorporadora dona de cada um. Vem da base unificada <code>analytics.dim_empreendimentos_unificado</code>, que junta os empreendimentos do Salesforce e os do histórico Pipefy, para que nenhuma pasta fique sem empreendimento.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 empreendimento</span><span class="chip"><strong>Fonte</strong> Salesforce + histórico Pipefy</span></div>
       <details class="cols"><summary>ver colunas</summary><div class="col-list">
-        <div><code>id, nome, incorporadora_id, nome_incorporadora, cidade, is_deleted</code><span>identificação e localização</span></div>
+        <div><code>id, nome, incorporadora_id, nome_incorporadora, cidade</code><span>identificação e localização</span></div>
         <div><code>Tem Fato (Cases)</code> <span class="pill" style="margin-left:4px;">DAX</span><span>indica se o empreendimento tem pelo menos um caso relacionado em <code>fct_cases</code></span></div>
         <div><code>Tem Fato (Pastas)</code> <span class="pill" style="margin-left:4px;">DAX</span><span>indica se o empreendimento tem pelo menos uma pasta relacionada em <code>fct_pastas_credito</code></span></div>
       </div></details>
@@ -592,7 +602,7 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
       <p class="desc">Não guardam nenhum dado — servem só para organizar as fórmulas usadas nos gráficos, detalhadas na seção <a href="#medidas">Medidas</a>, mais acima.</p>
     </div>
 
-    <footer class="doc-footer">Documentação atualizada a partir da definição do relatório em 28/07/2026 — reflete a estrutura do dashboard no momento da geração.</footer>
+    <footer class="doc-footer">Documentação atualizada a partir da definição do relatório em 24/09/2026 — reflete a estrutura do dashboard no momento da geração.</footer>
   </section>
 
 </main>
