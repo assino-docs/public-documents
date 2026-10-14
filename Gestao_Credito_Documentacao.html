@@ -523,6 +523,7 @@
     </div>
     <div class="note-box">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><strong>Migração DW 069 (14/10/2026):</strong> SLAs por fila, passagens das reversões, agendamento (cumprimento e prazo), remarcações, líderes e origem passaram a vir prontos do DW: o Power BI só filtra e renomeia. O filtro <strong>Origem</strong> abre em Salesforce.</div>
       <div><strong>Migração para o DW (out/2026):</strong> as 5 tabelas de SLA das filas e reversões e as passagens das reversões já vêm do DW (<code>fct_repasse_sla_etapa</code> e <code>fct_repasse_passagens_etapa</code>, lidas uma vez e só filtradas no Power BI); a <code>dim_sintese</code> também. Validado por indicador em 09/10/2026. <strong>Provisório:</strong> <code>pv fpy</code>, <code>pv fpy_movimentacoes</code>, <code>pv formulario_trechos</code>, as tabelas do SLA do Repasse, <code>pv sla_agendamento</code>, <code>pv sla_prazo_agendamento</code> e <code>dim_lideres</code> ainda são calculadas no Power BI e vão ser levadas para o DW. O SLA de 3 dias também está escrito nas medidas até existir uma tabela de referência.</div>
     </div>
   </section>
