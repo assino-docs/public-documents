@@ -296,6 +296,20 @@
 
   .hidden-by-search { display: none !important; }
 
+  /* ── ABAS (uma por página do dashboard) ───────────────── */
+  .tabbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .tab {
+    font-family: var(--sans); font-size: 12.5px; color: var(--muted); background: var(--card);
+    border: 1px solid var(--border); border-radius: 20px; padding: 5px 13px; cursor: pointer; text-decoration: none;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); font-weight: 600; border-color: var(--ink); }
+  .main > section { display: none; }
+  .main > section.is-active { display: block; }
+  .main > hr.divider { display: none; }
+  body.searching .main > section { display: block; }
+  body.searching .tabbar::after { content: "Buscando em todas as abas"; font-size: 12px; color: var(--muted); align-self: center; margin-left: 6px; }
+
   footer.doc-footer { color: var(--muted); font-size: 11.5px; padding: 20px 0 0; border-top: 1px solid var(--border-soft); margin-top: 12px; }
 
   @media (max-width: 860px) {
@@ -322,12 +336,24 @@
   <a class="nav-item" data-accent="comercial" href="#pagina-comercial"><span class="dot"></span>Comercial</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-pos-vendas"><span class="dot"></span>Repasse · SLA por fase e fila</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-pos-vendas-agendamentos"><span class="dot"></span>Repasse · Agendamentos</a>
+  <a class="nav-item" data-accent="posvendas" href="#pagina-performance"><span class="dot"></span>Performance das filas</a>
   <div class="nav-label" style="margin-top:14px;">Sobre os dados</div>
   <a class="nav-item" data-accent="neutral" href="#medidas"><span class="dot"></span>Medidas</a>
   <a class="nav-item" data-accent="neutral" href="#bases-de-dados"><span class="dot"></span>Bases de dados</a>
 </aside>
 
 <main class="main" id="main">
+
+  <nav class="tabbar" id="tabbar" aria-label="Páginas da documentação">
+    <a class="tab" href="#pagina-capa">Capa</a>
+    <a class="tab" href="#pagina-credito">Crédito</a>
+    <a class="tab" href="#pagina-comercial">Comercial</a>
+    <a class="tab" href="#pagina-pos-vendas">Repasse · SLA</a>
+    <a class="tab" href="#pagina-pos-vendas-agendamentos">Repasse · Agendamentos</a>
+    <a class="tab" href="#pagina-performance">Performance das filas</a>
+    <a class="tab" href="#medidas">Medidas</a>
+    <a class="tab" href="#bases-de-dados">Bases de dados</a>
+  </nav>
 
   <!-- ═══════════════ PÁGINA CAPA ═══════════════ -->
   <section id="pagina-capa">
@@ -486,7 +512,7 @@
       <p class="rule-footnote">A ordem da jornada vem das listas de Status e Sínteses do Salesforce (tabela <code>dim_sintese</code>). O <strong>Distrato só deixa "Não avançou" a etapa imediatamente anterior a ele</strong>: as etapas que o Repasse já tinha completado continuam "Avançou". Todos os Repasses entram no %; o filtro "Situação na etapa", no topo, escolhe quais considerar (por exemplo, só os em andamento, para cobrar hoje).</p>
     </div>
 
-    <div class="note-box"><div><strong>Duas abas (out/2026):</strong> <strong>Repasse - SLA por fase</strong> (antiga "Indicadores de Performance") tem o SLA do Repasse, Limbo, Formulário, Jurídico (Fila de Sistemas), Contrato e FPY; <strong>Repasse - SLA por fila</strong> tem Reversão Atendimento, Reversão Crédito, Fila de Repasse, Fila de Atendimento e os 4 blocos de agendamento, com os pop-ups e marcadores (5. a 8. e 10. a 13.). As duas têm os mesmos filtros do topo; o filtro Origem fica só na aba por fase.</div></div>
+    <div class="note-box"><div><strong>Duas abas (out/2026):</strong> <strong>Repasse - SLA por fase</strong> (antiga "Indicadores de Performance") tem o SLA do Repasse, Limbo, Formulário, Jurídico, Contrato e FPY; <strong>Repasse - SLA por fila</strong> tem Reversão Atendimento, Reversão Crédito, Fila de Repasse, Fila de Atendimento, os 4 blocos de agendamento e os Envios à CEHOP por quem enviou (movidos da aba por fase em out/2026), com os pop-ups e marcadores (5. a 8. e 10. a 13.). As duas têm os mesmos filtros do topo; o filtro Origem fica só na aba por fase.</div></div>
 
     <div class="group-label">Indicadores (medidor + texto de apoio + botão "i")</div>
     <div class="card-grid">
@@ -494,13 +520,13 @@
       <div class="vcard" data-accent="posvendas" data-search="Reversão Crédito SLA Em Reavaliação Limbo analista"><div class="vcard-head"><h3>% dentro do SLA - Reversão Crédito</h3><span class="pill">KPI</span></div><p>% de Repasses com no máximo <strong>3 dias</strong> na Síntese "Em Reavaliação" (análise do Crédito). Avança se for para Em Definição ou Formulário em diante. Para a <strong>Vivaz</strong>, só entram Repasses com input feito (<code>status_input</code> = "Inputada").</p><div class="fields">Medidor: <code>Reversão Crédito %</code><br>Texto: média de dias · dentro · fora<br>Data: 1ª entrada em Em Reavaliação<br>Base: <code>pv sla_reversao_credito</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="Fila de Repasse SLA Formulário Montagem Repasse Pausado Débito FGTS Emissão"><div class="vcard-head"><h3>% dentro do SLA - Fila de Repasse</h3><span class="pill">KPI</span></div><p>% de Repasses com no máximo <strong>3 dias</strong> nas Sínteses de montagem do Formulário: Emissão de Formulários (só CRe), Montagem Repasse, Pausado Repasse e Débito FGTS. O tempo em Pausado Repasse conta no SLA e aparece também separado.</p><div class="fields">Medidor: <code>Fila Repasse %</code><br>Texto: média de dias · dentro · fora<br>Data: 1ª entrada na fila<br>Base: <code>pv sla_fila_repasse</code> (trechos em <code>pv formulario_trechos</code>)</div></div>
       <div class="vcard" data-accent="posvendas" data-search="Fila de Atendimento SLA Formulário Negociação Agendamento Formulário Agendado Reagendamento"><div class="vcard-head"><h3>% dentro do SLA - Fila de Atendimento</h3><span class="pill">KPI</span></div><p>% de Repasses com no máximo <strong>3 dias</strong> nas Sínteses de atendimento do Formulário: Negociação, Agendamento Formulários, Formulário Agendado, Formulário Assinado com Pendência e Reagendamento de Formulários. Avança ao ir para Jurídico; voltar para a Fila de Repasse é "Não avançou".</p><div class="fields">Medidor: <code>Fila Atendimento %</code><br>Texto: média de dias · dentro · fora<br>Data: 1ª entrada na fila<br>Base: <code>pv sla_fila_atendimento</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="Fila de Sistemas SLA Jurídico Análise CEHOP Pausados Sistemas"><div class="vcard-head"><h3>% dentro do SLA - Fila de Sistemas</h3><span class="pill">KPI</span></div><p>% de Repasses com no máximo <strong>3 dias</strong> no Status Jurídico (soma das passagens). Avança ao ir para Contrato. A tabela do "i" mostra também os dias em Análise CEHOP e em Pausados Sistemas (só informativos).</p><div class="fields">Medidor: <code>SLA Jurídico %</code><br>Texto: média de dias · dentro · fora<br>Data: 1ª entrada em Jurídico<br>Base: <code>pv sla_juridico</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="SLA por fase Limbo Formulário Contrato Possível Venda minuta"><div class="vcard-head"><h3>% dentro do SLA - Limbo / Formulário / Contrato</h3><span class="pill">KPI</span></div><p>SLA de cada fase inteira (aba SLA por fase). <strong>Limbo:</strong> tempo no Status Limbo sem a Possível Venda, que aparece destacada no texto. <strong>Formulário:</strong> tempo no Status Formulário (Fila de Repasse + Atendimento). <strong>Contrato:</strong> Conforme Impedido até Contrato Agendado, contando só até o dia do agendamento da minuta. SLA de 3 dias provisório, na tabela <code>SLA referência</code>. O "i" mostra os Repasses, os dias médios por Síntese e o histórico.</p><div class="fields">Medidores: <code>Fase Limbo %</code>, <code>Fase Formulário %</code>, <code>Fase Contrato %</code><br>Data: 1ª entrada na fase<br>Base: <code>pv sla_fase</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="SLA do Repasse em andamento idade fase atual"><div class="vcard-head"><h3>SLA do Repasse - em andamento</h3><span class="pill">KPI</span></div><p>Repasses ainda não assinados: quantos há em cada fase, a idade média (criação → hoje, sem Possível Venda) e os dias médios na fase atual. Sem medidor nem faixas, por ora. Foto de agora: o Período não se aplica, a Origem sim. O "i" mostra Repasses por fase, a idade dividida por fase, a idade média por construtora e a lista em vermelho acima da meta.</p><div class="fields">Base: <code>pv sla_repasse_andamento</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="Envios CEHOP Inconforme taxa quem enviou usuário reenvio"><div class="vcard-head"><h3>Envios à CEHOP por quem enviou</h3><span class="pill">Matriz</span></div><p>Por pessoa que mudou a Síntese para Análise CEHOP (1º envio) ou Reenvio CEHOP: envios, Inconformes (a Síntese seguinte foi Inconforme) e taxa sobre os já respondidos. Taxa em branco abaixo do volume mínimo (10 envios, na tabela <code>SLA referência</code>). <strong>A taxa é um sinal, não prova de culpa</strong>: Inconforme pode vir de documentação do cliente ou da construtora. O "i" lista os envios. O filtro <strong>Situação na etapa</strong> funciona aqui: Em andamento = aguardando retorno; Não avançou = Inconforme; Avançou = outra Síntese.</p><div class="fields">Data: envio<br>Base: <code>pv envios_cehop</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Jurídico macrofase Fila de Sistemas SLA Análise CEHOP Pausados Sistemas"><div class="vcard-head"><h3>% dentro do SLA - Jurídico</h3><span class="pill">KPI</span></div><p>Macrofase Jurídico (antes chamado "Fila de Sistemas"; renomeado em out/2026 porque mede o Status inteiro, não os itens da Fila de Sistemas). % de Repasses com no máximo <strong>3 dias</strong> no Status Jurídico (soma das passagens). Só entram Repasses com mais de 1 minuto em Jurídico. Avança ao ir para Contrato. A tabela do "i" mostra também os dias em Análise CEHOP e em Pausados Sistemas (só informativos).</p><div class="fields">Medidor: <code>SLA Jurídico %</code><br>Texto: média · mediana · dentro · fora<br>Data: 1ª entrada em Jurídico<br>Base: <code>pv sla_juridico</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="SLA por fase Limbo Formulário Contrato Possível Venda minuta mediana"><div class="vcard-head"><h3>% dentro do SLA - Limbo / Formulário / Contrato</h3><span class="pill">KPI</span></div><p>SLA de cada fase inteira (aba SLA por fase). <strong>Limbo:</strong> tempo no Status Limbo sem a Possível Venda, que aparece no texto como "PV". <strong>Formulário:</strong> tempo no Status Formulário (Fila de Repasse + Atendimento). Só entram Repasses que ficaram <strong>mais de 1 minuto</strong> na fase (fora a Possível Venda): passagens relâmpago e Limbo só em Possível Venda ficam de fora do %, da média e da mediana. <strong>Contrato:</strong> Conforme Impedido até Contrato Agendado, contando só até o dia do agendamento da minuta. SLA de 3 dias provisório, na tabela <code>SLA referência</code>. O "i" mostra os Repasses, os dias médios por Síntese e o histórico.</p><div class="fields">Medidores: <code>Fase Limbo %</code>, <code>Fase Formulário %</code>, <code>Fase Contrato %</code><br>Texto: média · mediana · dentro · fora<br>Data: 1ª entrada na fase<br>Base: <code>pv sla_fase</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="SLA do Repasse em andamento idade fase atual"><div class="vcard-head"><h3>SLA do Repasse - em andamento</h3><span class="pill">KPI</span></div><p>Repasses ainda não assinados: quantos há em cada fase, a idade média e a mediana (criação → hoje, sem Possível Venda) e os dias médios na fase atual. Sem medidor nem faixas, por ora. Foto de agora: o Período não se aplica, a Origem sim. O "i" mostra Repasses por fase, a idade dividida por fase, a idade média por construtora e a lista em vermelho acima da meta.</p><div class="fields">Base: <code>pv sla_repasse_andamento</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Envios CEHOP Inconforme taxa quem enviou usuário reenvio"><div class="vcard-head"><h3>Envios à CEHOP por quem enviou</h3><span class="pill">Matriz</span></div><p><strong>Na aba Repasse - SLA por fila</strong> (canto inferior esquerdo). Por pessoa que mudou a Síntese para Análise CEHOP (1º envio) ou Reenvio CEHOP: envios, Inconformes (a Síntese seguinte foi Inconforme) e taxa sobre os já respondidos. Taxa em branco abaixo do volume mínimo (10 envios, na tabela <code>SLA referência</code>). <strong>A taxa é um sinal, não prova de culpa</strong>: Inconforme pode vir de documentação do cliente ou da construtora. O "i" lista os envios. O filtro <strong>Situação na etapa</strong> funciona aqui (regra do DW, out/2026): Em andamento = aguardando retorno; Avançou = foi para Contrato ou Registro; Não avançou = Inconforme, outra Síntese do Jurídico ou volta de fase.</p><div class="fields">Data: envio (relação inativa, <code>USERELATIONSHIP</code>)<br>Base: <code>analytics fct_historico_repasse</code> com <code>is_envio_cehop_indicador</code> (SDD 070)</div></div>
       <div class="vcard" data-accent="posvendas" data-search="Média de passagens por macrofase Limbo Formulário Jurídico Contrato retrabalho"><div class="vcard-head"><h3>Média de passagens por macrofase</h3><span class="pill">Gráfico</span></div><p>Quantas vezes, em média, cada Repasse entrou em cada Status (Limbo, Formulário, Jurídico, Contrato), contando Repasses com 1ª entrada no período (desde 20/07/2026). Mais de 1 = retrabalho na macrofase. Trocar de fila dentro do mesmo Status não conta aqui.</p><div class="fields">Medida: <code>Fase Média de passagens</code><br>Base: <code>pv passagens_fase</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="FPY conformidade Inconforme Análise CEHOP Contrato primeira"><div class="vcard-head"><h3>FPY Conformidade</h3><span class="pill">KPI</span></div><p>% de Repasses que passaram por Análise CEHOP, chegaram em Contrato e <strong>nunca</strong> tiveram Inconforme. Quem ainda não chegou em Contrato não entra. Não é afetado pelo filtro "Situação na etapa".</p><div class="fields">Medidor: <code>FPY %</code><br>Texto: conformes de 1ª · com Inconforme<br>Data: 1ª Análise CEHOP<br>Base: <code>pv fpy</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="SLA do Repasse faixas criação agendamento minuta Possível Venda assinado 15 20 25 dias"><div class="vcard-head"><h3>% até 25 dias - SLA do Repasse</h3><span class="pill">KPI</span></div><p>Tempo da criação do Repasse (<code>data_criacao_repasse</code>, que usa a data de origem quando existe) até o agendamento da minuta (<code>data_assinatura_contrato</code>), <strong>sem o tempo em Possível Venda</strong>. Só Repasses assinados (<code>is_assinado</code>). Faixas: até 15 · 16 a 20 · 21 a 25 · acima de 25 dias. Para Repasses criados antes de 12/08/2026, o desconto de Possível Venda pode estar incompleto (marcado na tabela). O filtro <strong>Origem</strong> do topo separa os Repasses que nasceram no Salesforce dos migrados do Pipefy, cujo tempo no Pipefy infla este indicador.</p><div class="fields">Medidor: <code>SLA Repasse %</code> (% até 25 dias)<br>Texto: média · ≤15 · 16–20 · 21–25<br>Data: agendamento da minuta<br>Base: <code>pv sla_repasse</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="SLA do Repasse faixas criação agendamento minuta Possível Venda assinado 15 20 25 dias"><div class="vcard-head"><h3>% até 25 dias - SLA do Repasse</h3><span class="pill">KPI</span></div><p>Tempo da criação do Repasse (<code>data_criacao_repasse</code>, que usa a data de origem quando existe) até o agendamento da minuta (<code>data_assinatura_contrato</code>), <strong>sem o tempo em Possível Venda</strong>. Só Repasses assinados (<code>is_assinado</code>). Faixas: até 15 · 16 a 20 · 21 a 25 · acima de 25 dias. Para Repasses criados antes de 12/08/2026, o desconto de Possível Venda pode estar incompleto (marcado na tabela). O filtro <strong>Origem</strong> do topo separa os Repasses que nasceram no Salesforce dos migrados do Pipefy, cujo tempo no Pipefy infla este indicador.</p><div class="fields">Medidor: <code>SLA Repasse %</code> (% até 25 dias)<br>Texto: média · mediana · ≤15 · 16–20 · 21–25<br>Data: agendamento da minuta<br>Base: <code>pv sla_repasse</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="Agendamento Formulário Contrato minuta data agendada remarcações no dia"><div class="vcard-head"><h3>% no dia agendado - Agendamento de Formulário / de Contrato</h3><span class="pill">KPI</span></div><p><strong>Na página <a href="#pagina-pos-vendas-agendamentos">Repasse - Agendamentos</a>.</strong> % de agendamentos em que o Repasse chegou ao destino <strong>no dia agendado ou antes</strong>, usando a data agendada <strong>final</strong> (depois das remarcações). Formulário: chegar em Jurídico até o dia de <code>Formularios_Agendados_para__c</code>. Contrato: contrato assinado (Conferência) até o dia da minuta (<code>Data_Agendamento_Minuta__c</code>). Sem chegada e com a data vencida conta como fora; data ainda não vencida fica de fora ("aguardando"). O medidor olha o último agendamento de cada Repasse; o "i" mostra cada agendamento, com as remarcações. No Formulário, o "i" mostra também as Sínteses desde o agendamento até Jurídico (ex.: Formulário Assinado com Pendência), para explicar a demora.</p><div class="fields">Medidores: <code>Agend. Formulário %</code>, <code>Agend. Contrato %</code><br>Texto: no dia · depois · aguardando<br>Data: 1ª entrada em Agendado<br>Base: <code>analytics fct_repasse_agendamentos</code> (DW) e <code>pv sla_agendamento</code></div></div>
     </div>
 
@@ -524,7 +550,7 @@
     <div class="note-box">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
       <div><strong>Migração DW 069 (14/10/2026):</strong> SLAs por fila, passagens das reversões, agendamento (cumprimento e prazo), remarcações, líderes e origem passaram a vir prontos do DW: o Power BI só filtra e renomeia. O filtro <strong>Origem</strong> abre em Salesforce.</div>
-      <div><strong>Migração para o DW (out/2026):</strong> as 5 tabelas de SLA das filas e reversões e as passagens das reversões já vêm do DW (<code>fct_repasse_sla_etapa</code> e <code>fct_repasse_passagens_etapa</code>, lidas uma vez e só filtradas no Power BI); a <code>dim_sintese</code> também. Validado por indicador em 09/10/2026. <strong>Provisório:</strong> <code>pv fpy</code>, <code>pv fpy_movimentacoes</code>, <code>pv formulario_trechos</code>, as tabelas do SLA do Repasse, <code>pv sla_agendamento</code>, <code>pv sla_prazo_agendamento</code> e <code>dim_lideres</code> ainda são calculadas no Power BI e vão ser levadas para o DW. O SLA de 3 dias também está escrito nas medidas até existir uma tabela de referência.</div>
+      <div><strong>Migração para o DW (out/2026):</strong> as 5 tabelas de SLA das filas e reversões e as passagens das reversões já vêm do DW (<code>fct_repasse_sla_etapa</code> e <code>fct_repasse_passagens_etapa</code>, lidas uma vez e só filtradas no Power BI); a <code>dim_sintese</code> também. Validado por indicador em 09/10/2026. Desde o SDD 070 (out/2026), os trechos de Síntese (<code>pv formulario_trechos</code>, <code>pv sla_fase_trechos</code>, <code>pv sla_juridico_passagens</code>) vêm da <code>fct_repasse_trechos_sintese</code>, e os envios à CEHOP são medidas sobre a <code>fct_historico_repasse</code>; as DAX antigas ficam ocultas como <code>_old</code> até a conferência. <strong>Provisório:</strong> <code>pv fpy</code>, <code>pv fpy_movimentacoes</code>, <code>pv sla_fase</code>, <code>pv passagens_fase</code>, as tabelas do SLA do Repasse, <code>pv sla_agendamento</code>, <code>pv sla_prazo_agendamento</code> e <code>dim_lideres</code> ainda são calculadas no Power BI e vão ser levadas para o DW. O SLA de 3 dias também está escrito nas medidas até existir uma tabela de referência.</div>
     </div>
   </section>
 
@@ -549,10 +575,75 @@
 
   <hr class="divider">
 
+  <!-- ═══════════════ PÁGINA PERFORMANCE DAS FILAS ═══════════════ -->
+  <section id="pagina-performance">
+    <div class="page-head" data-accent="posvendas">
+      <h1>Página · Performance das filas <span class="page-tag" data-accent="posvendas">em construção</span></h1>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Os 10 indicadores de performance das filas de pós-vendas (planilha "Indicadores Performance Will", entrega de 13/10/2026): <strong>% tempo produtivo</strong> de 4 filas e <strong>produtividade por analista</strong> em 6 atividades. Base: <code>analytics fct_fila_atividades</code> (DW). A página está oculta no modo de leitura. Regras completas: <code>Credito/docs/pos-vendas-indicadores.md</code>, seção 6I.</p>
+    </div>
+
+    <div class="rule-card" id="regra-atividade">
+      <h3>O que é uma atividade?</h3>
+      <p>Cada vez que um Item de Fila entra em <strong>Pausado</strong>, <strong>Improdutivo</strong> ou <strong>Concluído</strong>, o DW registra uma atividade:</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Entrada em</th><th>Tipo</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td>Concluído</td><td><span class="pill-result conclusiva">Produtiva</span></td><td rowspan="2">Item Alocado → Pausado → Alocado → Concluído = <strong>1 item</strong> e <strong>2 atividades</strong> (1 improdutiva + 1 produtiva).</td></tr>
+            <tr><td>Pausado ou Improdutivo</td><td><span class="pill-result naoconclusiva">Improdutiva</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="rule-footnote"><strong>Data</strong> da atividade (usada no Período): na 1ª, a 1ª entrada em Alocado; nas seguintes, a saída da pausa. <strong>Analista</strong>: o responsável naquela atividade, não o atual do item. <strong>Tempo</strong>: cada atividade vale um tempo tabelado (hoje 20 min para todas); o tempo em Fazendo não conta. <strong>Pausa é sempre improdutiva</strong>, qualquer que seja o motivo. Atividade ainda aberta (Alocado, Fazendo) só entra quando fecha. Atividades do fim de semana entram.</p>
+    </div>
+
+    <div class="rule-card" id="regra-indicadores-performance">
+      <h3>Filtro de cada indicador</h3>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Indicador</th><th>Fila</th><th>Atividades</th></tr></thead>
+          <tbody>
+            <tr><td>% tempo produtivo · Fila de Repasse</td><td>Repasse</td><td>Montagem Repasse, Montagem Isolado, Triagem</td></tr>
+            <tr><td>% tempo produtivo · Fila de Sistemas</td><td>Sistemas</td><td>Montagem Sistemas, Montagem Sistemas Individual</td></tr>
+            <tr><td>% tempo produtivo · Reversão atendente</td><td>Fila_Reavaliacao</td><td>Solicitação de Documentação</td></tr>
+            <tr><td>% tempo produtivo · Reversão Crédito</td><td>Fila_Reavaliacao</td><td>Reavaliação</td></tr>
+            <tr><td>Montagens por analista/dia</td><td>Repasse</td><td>Montagem Repasse, Montagem Isolado</td></tr>
+            <tr><td>Envios por analista/dia</td><td>Sistemas</td><td>Montagem Sistemas, Montagem Sistemas Individual</td></tr>
+            <tr><td>Agendamentos por analista/dia</td><td>Atendimento</td><td>Agendamento Formulário, Agendamento Contrato</td></tr>
+            <tr><td>Atendimentos por analista/dia</td><td>Atendimento</td><td>Atendimento formulário, Atendimento de Contrato</td></tr>
+            <tr><td>Reversões concluídas / analista</td><td>Fila_Reavaliacao</td><td>Solicitação de Documentação</td></tr>
+            <tr><td>Aprovações concluídas / analista</td><td>Fila_Reavaliacao</td><td>Reavaliação</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="group-label">Tabelas</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="posvendas" data-search="% tempo produtivo por analista Repasse Sistemas Reversão Itens Atividades Histórico completo"><div class="vcard-head"><h3>% tempo produtivo por analista</h3><span class="pill">Tabela</span></div><p>Uma linha por analista e o <strong>Total</strong> (equipe). Para cada fila: tempo tabelado das atividades concluídas ÷ tempo de todas (concluídas + pausas + improdutivos). Com 20 min para todas, é igual a concluídas ÷ todas: 3 montagens e 1 pausa = 75%. Em branco quando o analista não trabalhou naquela fila. <strong>Itens</strong> conta itens distintos (pausado e depois concluído = 1); <strong>Atividades</strong> conta entradas (o mesmo caso = 2), lado a lado para mostrar o peso das pausas. <strong>Histórico completo</strong>: parte das atividades com data exata (itens anteriores a 09/10/2026 têm a data aproximada).</p><div class="fields">Medidas: <code>Repasse % Tempo Produtivo</code>, <code>Sistemas % Tempo Produtivo</code>, <code>Reversão Atend. % Tempo Produtivo</code>, <code>Reversão Crédito % Tempo Produtivo</code>, <code>Perf Itens</code>, <code>Perf Atividades</code>, <code>Perf % Histórico Completo</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Produtividade por analista Montagens Envios Agendamentos Atendimentos Reversões Aprovações dias úteis FTE"><div class="vcard-head"><h3>Produtividade por analista</h3><span class="pill">Tabela</span></div><p>Só atividades <strong>concluídas</strong>: pausar não aumenta o número. Colunas "/dia": concluídas ÷ (FTE × dias úteis), com FTE = 1 por analista; no Total, ÷ (analistas × dias úteis). <strong>Reversões</strong> e <strong>Aprovações</strong>: concluídas no período ÷ FTE, sem dividir por dias. <strong>Dias úteis</strong>: segunda a sexta, sem feriados, desde 09/10/2026 até hoje. Concluídas no fim de semana entram no numerador.</p><div class="fields">Medidas: <code>Repasse Montagens por Analista/Dia</code>, <code>Sistemas Envios por Analista/Dia</code>, <code>Atendimento Agendamentos por Analista/Dia</code>, <code>Atendimento Atendimentos por Analista/Dia</code>, <code>Reversão Atend. Concluídas por Analista</code>, <code>Reversão Crédito Aprovações por Analista</code>, <code>Perf Dias Úteis</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Atividades histórico detalhe QI item link Salesforce Nº sequência"><div class="vcard-head"><h3>Atividades (histórico)</h3><span class="pill">Tabela</span></div><p>Uma linha por atividade, <strong>agrupada por item</strong> (QI-…, o mais recente primeiro) e na ordem em que aconteceu (Nº 1, 2, 3…), para contar os itens distintos e ver a jornada de cada um. Colunas: Item (QI), links do item e do Repasse, fila, atividade, Nº, tipo, fechamento, analista, data do indicador, início, fechada em, minutos, histórico completo e fonte do responsável. Clicar num analista nas tabelas de cima filtra esta. Duplicatas ficam fora.</p><div class="fields">Base: <code>analytics fct_fila_atividades</code></div></div>
+    </div>
+
+    <div class="group-label">Segmentações (filtros)</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="posvendas" data-search="Slicer Período performance data atividade"><div class="vcard-head"><h3>Período</h3><span class="pill">Segmentação</span></div><p>Filtra pela data da atividade (1ª alocação ou saída da pausa). Também define os dias úteis das colunas "/dia".</p></div>
+      <div class="vcard" data-accent="posvendas" data-search="Slicer Analista responsável performance"><div class="vcard-head"><h3>Analista</h3><span class="pill">Segmentação</span></div><p>O responsável de cada atividade.</p><div class="fields"><code>fct_fila_atividades[responsavel]</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Slicer Fila performance Repasse Sistemas Atendimento Fila_Reavaliacao"><div class="vcard-head"><h3>Fila</h3><span class="pill">Segmentação</span></div><p>A fila do item, como vem do Salesforce: Repasse, Sistemas, Atendimento, Fila_Reavaliacao…</p><div class="fields"><code>fct_fila_atividades[fila]</code></div></div>
+    </div>
+
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><strong>Provisório:</strong> todas as atividades valem 20 min (sem tempos reais nem nível do analista); FTE = 1 por analista, todos tratados igualmente (sem faltas nem horas extras); dias úteis = segunda a sexta. A escala real é de 44 h semanais com 1 a 2 folgas em qualquer dia, e horas semanais podem virar a referência. O histórico das filas existe desde 09/10/2026.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
   <!-- ═══════════════ MEDIDAS ═══════════════ -->
   <section id="medidas">
     <h1>Medidas</h1>
-    <p class="lede">82 medidas DAX, organizadas em quatro tabelas "de apoio" (<code>_medidas_qtd_credito</code>, <code>_medidas_qtd_comercial</code>, <code>_medidas_tempo</code> e <code>_medidas_pos_vendas</code>) que não guardam dados — só hospedam as fórmulas. Foram removidas as medidas e colunas calculadas que não apareciam em nenhum visual nem eram usadas por outra medida. Clique em "ver fórmula" para o DAX completo.</p>
+    <p class="lede">Medidas DAX, organizadas em cinco tabelas "de apoio" (<code>_medidas_qtd_credito</code>, <code>_medidas_qtd_comercial</code>, <code>_medidas_tempo</code>, <code>_medidas_pos_vendas</code> e <code>_medidas_performance</code>) que não guardam dados — só hospedam as fórmulas. Foram removidas as medidas e colunas calculadas que não apareciam em nenhum visual nem eram usadas por outra medida. Clique em "ver fórmula" para o DAX completo.</p>
 
     <div class="measure-group-title">_medidas_qtd_credito — página Crédito</div>
     <div class="measure-group-sub">Baseadas em <code>fct_cases</code> (análises de crédito).</div>
@@ -639,12 +730,13 @@ RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias
           <tr data-search="Fora medida SLA"><td class="mname">&lt;X&gt; Fora</td><td>Total − Dentro.</td><td><span class="used">texto de apoio e tooltip</span></td></tr>
           <tr data-search="% medida SLA medidor"><td class="mname">&lt;X&gt; %</td><td>Dentro ÷ Total.</td><td><span class="used">medidor do bloco</span></td></tr>
           <tr data-search="Média dias medida SLA"><td class="mname">&lt;X&gt; Média (dias)</td><td>Média do SLA total; para quem está em andamento, conta até agora.</td><td><span class="used">texto de apoio</span></td></tr>
-          <tr data-search="Rótulo medida texto apoio"><td class="mname">&lt;X&gt; Rótulo</td><td>Texto abaixo do medidor: "4,8 dias em média · 35 dentro · 12 fora".</td><td><span class="used">cartão do bloco</span></td></tr>
+          <tr data-search="Mediana dias medida SLA"><td class="mname">&lt;X&gt; Mediana (dias)</td><td>Mediana do SLA total (metade dos Repasses fica abaixo), menos sensível a casos extremos. Existe para o SLA do Repasse, a idade em andamento, as fases e o Jurídico.</td><td><span class="used">texto de apoio</span></td></tr>
+          <tr data-search="Rótulo medida texto apoio"><td class="mname">&lt;X&gt; Rótulo</td><td>Texto abaixo do medidor: "4,8 dias em média · 35 dentro · 12 fora". Na aba SLA por fase, com a mediana: "média 4,8 · mediana 3,1 d · 35 dentro · 12 fora".</td><td><span class="used">cartão do bloco</span></td></tr>
           <tr data-search="Cor medida destaque vermelho"><td class="mname">&lt;X&gt; Cor</td><td>Vermelho claro quando o SLA total passa de 3 dias.</td><td><span class="used">tabela do pop-up (formatação)</span></td></tr>
           <tr data-search="Linha Visível medida seletor Atrasados Todos"><td class="mname">&lt;X&gt; Linha Visível</td><td>1 se a linha entra nas tabelas do pop-up (sem duplicata). Leva o Repasse clicado até o histórico.</td><td><span class="used">filtro das tabelas do pop-up</span></td></tr>
           <tr data-search="FPY Denominador Numerador Inconformes medida"><td class="mname">FPY Denominador / Numerador / Inconformes / % / Rótulo</td><td>Repasses que chegaram em Contrato depois da Análise CEHOP; os que nunca tiveram Inconforme; a diferença; o %; e o texto "conformes de 1ª · com Inconforme".</td><td><span class="used">bloco FPY</span></td></tr>
           <tr data-search="SLA Repasse Dias por fase síntese medida"><td class="mname">SLA Repasse Dias por fase / por síntese</td><td>Dias médios por Repasse da faixa em cada macrofase ou Síntese, incluindo "Sem dados" e "Possível Venda (descontada)".</td><td><span class="used">pop-up do SLA do Repasse</span></td></tr>
-          <tr data-search="SLA Repasse Total Até 15 % Média faixa Rótulo medida"><td class="mname">SLA Repasse Total / Até 25 / % / Média (dias) / % da faixa / Rótulo</td><td>Repasses assinados; os com até 25 dias; o % até 25 dias; a média; a participação de cada faixa; e o texto "média · ≤15 · 16–20 · 21–25".</td><td><span class="used">bloco SLA do Repasse e pop-up de faixas</span></td></tr>
+          <tr data-search="SLA Repasse Total Até 15 % Média faixa Rótulo medida"><td class="mname">SLA Repasse Total / Até 25 / % / Média (dias) / % da faixa / Rótulo</td><td>Repasses assinados; os com até 25 dias; o % até 25 dias; a média; a participação de cada faixa; e o texto "média · mediana · ≤15 · 16–20 · 21–25".</td><td><span class="used">bloco SLA do Repasse e pop-up de faixas</span></td></tr>
           <tr data-search="Prazo Formulário Contrato Total Dentro Fora % Média Remarcações Rótulo Cor medida agendamento"><td class="mname">Prazo Formulário / Prazo Contrato Total / Dentro / Fora / % / Média (dias) / Remarcações / Rótulo / Cor</td><td>Repasses com prazo válido (último ciclo, sem duplicatas); os com prazo ≤ 3 dias; a diferença; o %; o prazo médio; a soma das remarcações; o texto "média · dentro · fora · remarcações"; e o vermelho claro para Fora do prazo.</td><td><span class="used">blocos e pop-ups do prazo (página Repasse - Agendamentos)</span></td></tr>
         </tbody>
       </table>
@@ -652,6 +744,30 @@ RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias
     <div class="note-box">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
       <div><strong>Situação na etapa</strong>, <strong>Visão SLA</strong> e <strong>Visão Filas</strong> são tabelas auxiliares de poucas linhas. A primeira filtra os SLAs pela coluna <code>situacao</code>; as outras duas não têm relacionamento e só alimentam os seletores dos pop-ups.</div>
+    </div>
+    <div class="measure-group-title">_medidas_performance — página Performance das filas</div>
+    <div class="measure-group-sub">33 medidas, baseadas em <code>analytics fct_fila_atividades</code>. Todas tiram as duplicatas. Os filtros de fila e atividade usam <code>KEEPFILTERS</code>.</div>
+    <div class="table-wrap">
+      <table class="data" data-search-table>
+        <thead><tr><th>Medida</th><th>O que calcula</th><th>Onde é usada</th></tr></thead>
+        <tbody>
+          <tr data-search="Perf Atividades Produtivas Improdutivas medida"><td class="mname">Perf Atividades / Produtivas / Improdutivas</td><td>Atividades (entradas em Pausado, Improdutivo ou Concluído); só as Concluídas; só as Pausadas ou Improdutivas.</td><td><span class="used">Performance · tabela % tempo produtivo</span></td></tr>
+          <tr data-search="Perf Itens itens distintos medida"><td class="mname">Perf Itens</td><td>Itens de fila distintos. Pausado e depois concluído = 1 item.<details class="dax"><summary>ver fórmula</summary><pre>CALCULATE ( DISTINCTCOUNT ( fct_fila_atividades[item_id] ),
+    fct_fila_atividades[is_duplicata_descartada] = FALSE () )</pre></details></td><td><span class="used">Performance · tabela % tempo produtivo</span></td></tr>
+          <tr data-search="Perf Minutos % Tempo Produtivo medida"><td class="mname">Perf Minutos / Minutos Produtivos / % Tempo Produtivo</td><td>Soma do tempo tabelado; só das Concluídas; produtivos ÷ total (= 1 − improdutivo).</td><td><span class="used">base dos 4 %</span></td></tr>
+          <tr data-search="Perf Analistas FTE medida"><td class="mname">Perf Analistas</td><td>Analistas distintos com atividade (FTE = 1 cada). Atividade sem responsável não conta.</td><td><span class="used">divisor da produtividade</span></td></tr>
+          <tr data-search="Perf Dias Úteis medida segunda a sexta"><td class="mname">Perf Dias Úteis</td><td>Segunda a sexta do período, de 09/10/2026 (início do histórico) até hoje.<details class="dax"><summary>ver fórmula</summary><pre>VAR _inicio = CALCULATE ( MIN ( fct_fila_atividades[data_atividade] ), REMOVEFILTERS (),
+    fct_fila_atividades[historico_completo] = TRUE () )
+RETURN CALCULATE ( COUNTROWS ( dim_calendario ),
+    KEEPFILTERS ( dim_calendario[eh_fim_semana] = FALSE () ),
+    KEEPFILTERS ( dim_calendario[data] &gt;= _inicio ),
+    KEEPFILTERS ( dim_calendario[data] &lt;= TODAY () ) )</pre></details></td><td><span class="used">Performance · tabela de produtividade</span></td></tr>
+          <tr data-search="Perf % Histórico Completo medida"><td class="mname">Perf % Histórico Completo</td><td>Parte das atividades com início exato.</td><td><span class="used">Performance · tabela % tempo produtivo</span></td></tr>
+          <tr data-search="% Tempo Produtivo Repasse Sistemas Reversão medida"><td class="mname">&lt;Fila&gt; % Tempo Produtivo</td><td><code>Perf % Tempo Produtivo</code> com o filtro de fila e atividades do indicador (Repasse, Sistemas, Reversão Atend., Reversão Crédito).</td><td><span class="used">Performance · tabela % tempo produtivo</span></td></tr>
+          <tr data-search="por Analista/Dia Montagens Envios Agendamentos Atendimentos medida"><td class="mname">&lt;X&gt; / &lt;X&gt; Analistas / &lt;X&gt; por Analista/Dia</td><td>Concluídas do indicador; analistas do indicador; concluídas ÷ (analistas × dias úteis). X = Repasse Montagens, Sistemas Envios, Atendimento Agendamentos, Atendimento Atendimentos.</td><td><span class="used">Performance · tabela de produtividade</span></td></tr>
+          <tr data-search="Reversões Aprovações por Analista medida"><td class="mname">Reversão Atend. Concluídas / Reversão Crédito Aprovações (por Analista)</td><td>Concluídas do indicador ÷ analistas, no período, sem dividir por dias.</td><td><span class="used">Performance · tabela de produtividade</span></td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -757,18 +873,20 @@ RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias
 
     <div class="tbl-card" data-search="histórico repasse fct_historico_repasse Status Síntese campo">
       <div class="tbl-card-head"><span class="tname-friendly">Histórico do Repasse</span><code class="tname-sub">analytics fct_historico_repasse</code><span class="badge badge-fato">Registro</span></div>
-      <p class="desc">Uma linha por <strong>intervalo</strong> em que um campo do Repasse (Status ou Última Síntese) ficou com um valor: início, fim e duração. É a fonte de todos os tempos da página. Oculta; usada só pelas tabelas <code>pv</code>.</p>
+      <p class="desc">Uma linha por <strong>intervalo</strong> em que um campo do Repasse (Status ou Última Síntese) ficou com um valor: início, fim e duração. É a fonte de todos os tempos da página. Oculta; só Assino. Usada pelas tabelas <code>pv</code> e, desde o SDD 070, pelas medidas de <strong>envios à CEHOP</strong> (linhas com <code>is_envio_cehop_indicador</code>). Liga-se direto a Construtora, Empreendimento e Líder; a data do envio (<code>data_inicio</code>) e a Situação na etapa (<code>situacao_envio_cehop</code>) entram por relação inativa, ativada com <code>USERELATIONSHIP</code> nas medidas. A relação com a <code>fct_repasses_assino</code> fica desativada, porque levaria o Período pela data de criação do Repasse.</p>
       <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 intervalo de um campo</span><span class="chip"><strong>Fonte</strong> Salesforce (histórico de campos)</span><span class="chip"><strong>Confiável</strong> Status desde 20/07/2026 · Síntese desde 11/08/2026 14:11</span></div>
       <details class="cols"><summary>ver colunas</summary><div class="col-list">
         <div><code>repasse_id, campo, valor, valor_anterior</code><span>qual campo mudou e para qual valor</span></div>
         <div><code>inicio, fim, data_inicio, data_fim, duracao_dias, is_vigente</code><span>quando (horário de Brasília); o registro aberto é calculado até agora</span></div>
         <div><code>is_cobertura_confiavel, is_retorno, is_duplicata_descartada, atualizado_na_origem_em</code><span>controle de qualidade e atualização</span></div>
+        <div><code>tipo_envio_cehop, resultado_envio_cehop, situacao_envio_cehop, is_envio_cehop_indicador, valor_seguinte, valor_seguinte_rotulo</code><span>envios à CEHOP (SDD 070): 1º envio ou reenvio, resultado, situação e Síntese seguinte</span></div>
+        <div><code>repasse_url, empreendimento_id, nome_empreendimento, incorporadora_id, nome_incorporadora, lider</code><span>atributos do Repasse, para as relações diretas com as dimensões</span></div>
       </div></details>
     </div>
 
     <div class="tbl-card" data-search="tabelas pv indicadores fpy sla juridico fila repasse atendimento reversao passagens trechos">
-      <div class="tbl-card-head"><span class="tname-friendly">Tabelas dos indicadores</span><code class="tname-sub">pv fpy · pv fpy_movimentacoes · pv sla_juridico · pv sla_juridico_passagens · pv formulario_trechos · pv sla_fila_repasse · pv sla_fila_atendimento · pv sla_reversao_credito · pv sla_reversao_passagens · pv sla_reversao_atendimento · pv sla_reversao_atendimento_passagens · pv sla_repasse · pv sla_repasse_trechos · pv sla_repasse_fases</code><span class="badge badge-util">DAX · provisória</span></div>
-      <p class="desc">Uma tabela por indicador (uma linha por Repasse) e, para o histórico dos pop-ups, uma por passagem ou trecho de Síntese. As de SLA das filas e reversões e as passagens das reversões já são <strong>filtros de importações do DW</strong> (<code>analytics fct_repasse_sla_etapa</code> e <code>analytics fct_repasse_passagens_etapa</code>, ocultas, lidas uma vez); as demais ainda são calculadas no Power BI. Cada uma traz a data do indicador, os dias, a situação na etapa, o destino e os atributos do Repasse. Ligam-se ao calendário pela data do próprio indicador, e não à <code>fct_repasses_assino</code>. Vão ser recriadas no DW com os mesmos nomes de coluna.</p>
+      <div class="tbl-card-head"><span class="tname-friendly">Tabelas dos indicadores</span><code class="tname-sub">pv fpy · pv fpy_movimentacoes · pv sla_juridico · pv sla_juridico_passagens · pv formulario_trechos · pv sla_fase · pv sla_fase_trechos · pv sla_fila_repasse · pv sla_fila_atendimento · pv sla_reversao_credito · pv sla_reversao_passagens · pv sla_reversao_atendimento · pv sla_reversao_atendimento_passagens · pv sla_repasse · pv sla_repasse_trechos · pv sla_repasse_fases</code><span class="badge badge-util">DAX · provisória</span></div>
+      <p class="desc">Uma tabela por indicador (uma linha por Repasse) e, para o histórico dos pop-ups, uma por passagem ou trecho de Síntese. As de SLA das filas e reversões e as passagens das reversões já são <strong>filtros de importações do DW</strong> (<code>analytics fct_repasse_sla_etapa</code> e <code>analytics fct_repasse_passagens_etapa</code>, ocultas, lidas uma vez); os trechos de Síntese (Jurídico, Formulário e por fase) são cargas da <code>fct_repasse_trechos_sintese</code> (SDD 070); as demais ainda são calculadas no Power BI. Cada uma traz a data do indicador, os dias, a situação na etapa, o destino e os atributos do Repasse. Ligam-se ao calendário pela data do próprio indicador, e não à <code>fct_repasses_assino</code>. Vão ser recriadas no DW com os mesmos nomes de coluna.</p>
       <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 Repasse (ou 1 passagem/trecho no histórico)</span><span class="chip"><strong>Fonte</strong> histórico + Repasses</span></div>
       <div class="rel-row">Também traz dados de: <span class="chip rel">Calendário</span><span class="chip rel">Construtoras</span><span class="chip rel">Empreendimentos</span><span class="chip rel">Líderes</span><span class="chip rel">Situação na etapa</span></div>
     </div>
@@ -791,9 +909,31 @@ RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias
       <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 líder</span><span class="chip"><strong>Fonte</strong> <code>fct_repasses_assino[lider]</code></span></div>
     </div>
 
+    <div class="group-label">Performance das filas</div>
+    <div class="tbl-card" data-search="fct_fila_atividades atividades item de fila performance">
+      <div class="tbl-card-head"><span class="tname-friendly">Atividades das filas</span><code class="tname-sub">analytics fct_fila_atividades</code><span class="badge badge-fato">Registro</span></div>
+      <p class="desc">Cada linha é <strong>uma atividade de um Item de Fila</strong>: cada entrada em Pausado ou Improdutivo (improdutiva) ou em Concluído (produtiva). Vem pronta do DW (SDD 067 e 070), só da Assino. Duplicatas ficam na tabela e saem nas medidas. Item excluído no Salesforce conta, porque é trabalho feito. Histórico desde 09/10/2026.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 atividade</span><span class="chip"><strong>Fonte</strong> DW (Salesforce, Item_de_Fila__c + histórico)</span></div>
+      <div class="rel-row">Liga a: <span class="chip rel">Calendário (data_atividade)</span><span class="chip rel">Usuários (responsavel_id)</span></div>
+      <details class="cols"><summary>ver colunas principais</summary><div class="col-list">
+        <div><code>item_id, item_nome, item_url, repasse_id, repasse_url</code><span>identificação (QI-…) e links</span></div>
+        <div><code>fila, atividade, sequencia</code><span>onde e em que ordem a atividade aconteceu no item</span></div>
+        <div><code>tipo, substatus_fechamento</code><span>produtiva / improdutiva e o substatus que fechou</span></div>
+        <div><code>data_atividade, inicio_atividade, data_alocacao, fechada_em</code><span>data do indicador e horários (BRT)</span></div>
+        <div><code>responsavel, responsavel_fonte, autor_fechamento</code><span>analista da atividade e de onde veio</span></div>
+        <div><code>minutos_referencia, minutos_fonte</code><span>tempo tabelado (hoje 20 min)</span></div>
+        <div><code>historico_completo, item_excluido, is_duplicata_descartada</code><span>cobertura e marcações</span></div>
+      </div></details>
+    </div>
+    <div class="tbl-card" data-search="dim_usuarios usuários Salesforce">
+      <div class="tbl-card-head"><span class="tname-friendly">Usuários</span><code class="tname-sub">analytics dim_usuarios</code><span class="badge badge-dim">Cadastro</span></div>
+      <p class="desc">Usuários do Salesforce não excluídos: <code>id</code> e <code>nome_completo</code>. Liga o responsável das atividades das filas.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 usuário</span><span class="chip"><strong>Fonte</strong> DW</span></div>
+    </div>
+
     <div class="group-label">Auxiliares</div>
     <div class="tbl-card" data-search="fórmulas de cálculo _medidas_qtd_credito _medidas_qtd_comercial _medidas_tempo">
-      <div class="tbl-card-head"><span class="tname-friendly">Fórmulas de cálculo</span><code class="tname-sub">_medidas_qtd_credito · _medidas_qtd_comercial · _medidas_tempo · _medidas_pos_vendas</code><span class="badge badge-util">Auxiliar</span></div>
+      <div class="tbl-card-head"><span class="tname-friendly">Fórmulas de cálculo</span><code class="tname-sub">_medidas_qtd_credito · _medidas_qtd_comercial · _medidas_tempo · _medidas_pos_vendas · _medidas_performance</code><span class="badge badge-util">Auxiliar</span></div>
       <p class="desc">Não guardam nenhum dado — servem só para organizar as fórmulas usadas nos gráficos, detalhadas na seção <a href="#medidas">Medidas</a>, mais acima.</p>
     </div>
 
@@ -802,7 +942,13 @@ RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias
       <p class="desc">Listas fixas de 3 linhas. <strong>Situação na etapa</strong> (Em andamento · Avançou · Não avançou) filtra os SLAs pela coluna <code>situacao</code>. <strong>Visão Filas</strong> e <strong>Visão SLA</strong> não são mais usadas (eram os seletores dos pop-ups, removidos) e podem ser excluídas.</p>
     </div>
 
-    <footer class="doc-footer">Documentação atualizada a partir da definição do relatório em 07/10/2026 — reflete a estrutura do dashboard no momento da geração.</footer>
+    <div class="tbl-card" data-search="SLA referência parâmetros parametro valor ref_parametros">
+      <div class="tbl-card-head"><span class="tname-friendly">Parâmetros (SLAs, faixas, metas)</span><code class="tname-sub">SLA referência</code><span class="badge badge-util">Manual · provisória</span></div>
+      <p class="desc">Tabela digitada no Power BI com as colunas <code>parametro</code> e <code>valor</code>. Os nomes de linha e de coluna são os mesmos da <code>analytics.ref_parametros</code> do DW, que ainda não é importada. Para mudar um valor: Transformar dados › SLA referência › engrenagem do passo Fonte.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 parâmetro</span></div>
+    </div>
+
+    <footer class="doc-footer">Documentação atualizada a partir da definição do relatório em 15/10/2026 — reflete a estrutura do dashboard no momento da geração.</footer>
   </section>
 
 </main>
@@ -810,10 +956,27 @@ RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias
 
 <script>
 (function () {
+  // Abas: uma seção por vez; o hash da URL escolhe a aba (os links internos também funcionam).
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.main > section'));
+  var tabLinks = Array.prototype.slice.call(document.querySelectorAll('.tab, .nav-item'));
+  function show(hash) {
+    var id = (hash || '').replace('#', '');
+    var target = id ? document.getElementById(id) : null;
+    var panel = target ? target.closest('.main > section') : null;
+    if (!panel) panel = panels[0];
+    panels.forEach(function (s) { s.classList.toggle('is-active', s === panel); });
+    tabLinks.forEach(function (l) { l.classList.toggle('active', l.getAttribute('href') === '#' + panel.id); });
+    if (target && target !== panel) { target.scrollIntoView(); } else { window.scrollTo(0, 0); }
+  }
+  window.addEventListener('hashchange', function () { show(location.hash); });
+  show(location.hash);
+})();
+
+(function () {
   var links = Array.prototype.slice.call(document.querySelectorAll('.nav-item'));
   var sections = links.map(function (l) { return document.getElementById(l.getAttribute('href').slice(1)); });
 
-  if ('IntersectionObserver' in window) {
+  if (false && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         var idx = sections.indexOf(entry.target);
@@ -834,6 +997,7 @@ RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias
 
   search.addEventListener('input', function () {
     var q = search.value.trim().toLowerCase();
+    document.body.classList.toggle('searching', q.length > 0);
     cards.forEach(function (el) {
       var hay = (el.getAttribute('data-search') + ' ' + el.textContent).toLowerCase();
       el.classList.toggle('hidden-by-search', q.length > 0 && hay.indexOf(q) === -1);
