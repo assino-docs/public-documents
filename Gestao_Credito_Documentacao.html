@@ -243,6 +243,18 @@
   .pill-result.conclusiva { background: var(--ok-soft); color: var(--credito); }
   .pill-result.naoconclusiva { background: var(--warn-soft); color: var(--warn); }
   .pill-result.outros { background: var(--border-soft); color: var(--muted); }
+  /* semáforo do piloto: mesmas cores do BI (No prazo #2C7A3F, A vencer #B7791F, Vencido #B23A3A) */
+  .pill-result.sem-prazo { background: rgba(44,122,63,.16); color: #2C7A3F; }
+  .pill-result.sem-vencer { background: rgba(183,121,31,.18); color: #B7791F; }
+  .pill-result.sem-vencido { background: rgba(178,58,58,.16); color: #B23A3A; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .pill-result.sem-prazo { color: #5FBF7A; }
+    :root:not([data-theme="light"]) .pill-result.sem-vencer { color: #E0A84A; }
+    :root:not([data-theme="light"]) .pill-result.sem-vencido { color: #E07A7A; }
+  }
+  :root[data-theme="dark"] .pill-result.sem-prazo { color: #5FBF7A; }
+  :root[data-theme="dark"] .pill-result.sem-vencer { color: #E0A84A; }
+  :root[data-theme="dark"] .pill-result.sem-vencido { color: #E07A7A; }
 
   .tname-friendly { font-family: var(--serif); font-size: 14px; font-weight: 700; }
   .tname-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); }
@@ -684,7 +696,7 @@
             <tr><td><strong>Carteira</strong></td><td>Repasse alocado a um dono (Projeto ou Atendimento) a partir da data de início do piloto (<code>ref_datas</code>). Enquanto a data estiver vazia, toda alocação conta. O resto é <strong>Fila</strong>.</td></tr>
             <tr><td><strong>Idade / SLA esperado</strong></td><td>Visão acumulada: dias em todas as macrofases em que o Repasse já entrou, contra a soma das metas dessas fases.</td></tr>
             <tr><td><strong>Fase atual / SLA da fase</strong></td><td>Dias na macrofase em que o Repasse está agora, somando todas as passagens (voltas), contra a meta só dessa fase. Assim o Limbo, que é a fase mais pesada, não estoura o SLA das fases seguintes.</td></tr>
-            <tr><td><strong>Semáforo</strong></td><td>Repasses em andamento, pela fase atual: <span class="pill-result conclusiva">No prazo</span> até 75% da meta da fase, <span class="pill-result outros">A vencer</span> de 75% a 100%, <span class="pill-result naoconclusiva">Vencido</span> acima.</td></tr>
+            <tr><td><strong>Semáforo</strong></td><td>Repasses em andamento, pela fase atual: <span class="pill-result sem-prazo">No prazo</span> até 75% da meta da fase, <span class="pill-result sem-vencer">A vencer</span> de 75% a 100%, <span class="pill-result sem-vencido">Vencido</span> acima.</td></tr>
           </tbody>
         </table>
       </div>
@@ -702,7 +714,7 @@
       <div class="vcard" data-accent="posvendas" data-search="Repasses quantidade Carteira Fila cartão"><div class="vcard-head"><h3>Repasses</h3><span class="pill">KPI</span></div><p>Quantos Repasses há em cada modelo no filtro atual.</p><div class="fields">Medidas: <code>Car Repasses Carteira</code>, <code>Car Repasses Fila</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="% no prazo assinados cartão"><div class="vcard-head"><h3>% no prazo (assinados)</h3><span class="pill">KPI</span></div><p>Dos Repasses assinados, quantos ficaram dentro do SLA esperado acumulado (Idade ≤ SLA esperado).</p><div class="fields">Medidas: <code>Car % no Prazo Carteira</code>, <code>Car % no Prazo Fila</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="Lead time médio meta 25 dias cartão"><div class="vcard-head"><h3>Lead time médio · meta 25 d</h3><span class="pill">KPI</span></div><p>Média de dias do SLA do Repasse dos assinados (criação → agendamento da minuta, sem Possível Venda).</p><div class="fields">Medidas: <code>Car Lead Time Médio Carteira</code>, <code>Car Lead Time Médio Fila</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="Analistas distintos por Repasse cartão"><div class="vcard-head"><h3>Analistas distintos por Repasse</h3><span class="pill">KPI</span></div><p>Média de analistas diferentes que trabalharam em cada Repasse. No modelo Carteira, a expectativa é que seja menor.</p><div class="fields">Medidas: <code>Car Analistas Distintos Carteira</code>, <code>… Fila</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Analistas distintos por Repasse cartão"><div class="vcard-head"><h3>Analistas distintos por Repasse</h3><span class="pill">KPI</span></div><p>Para cada Repasse, quantas <strong>pessoas diferentes já foram Responsável por algum Item de Fila</strong> dele, e a média disso. No Salesforce, é como abrir todos os Itens de Fila do Repasse e anotar quem aparece no campo <strong>Responsável</strong>, hoje ou em qualquer momento do histórico do item. A mesma pessoa em vários itens conta uma vez; a <strong>Central de Notificação</strong> não conta. Repasse sem Item de Fila conta 0. Entram todos os Repasses do filtro (assinados e em andamento). No modelo Carteira, a expectativa é que o número seja menor.</p><div class="fields">Medidas: <code>Car Analistas Distintos Carteira</code>, <code>… Fila</code><br><strong>No DW:</strong> <code>analytics.fct_repasses.qtd_analistas_distintos</code> (SDD 078) = <code>COUNT(DISTINCT)</code> dos valores de <code>raw.itens_fila.responsavel_id</code> e de <code>raw.records_histories</code> (<code>Item_de_Fila__c.Responsavel__c</code>, valor e valor anterior), casados com <code>dim_usuarios</code>, sem "Central de Notificação"; o BI tira a média por Repasse, sem duplicatas</div></div>
       <div class="vcard" data-accent="posvendas" data-search="% com volta de fase cartão retrabalho"><div class="vcard-head"><h3>% com volta de fase</h3><span class="pill">KPI</span></div><p>% de Repasses que voltaram para uma macrofase anterior (retrabalho).</p><div class="fields">Medidas: <code>Car % com Volta Carteira</code>, <code>… Fila</code></div></div>
     </div>
 
