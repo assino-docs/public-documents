@@ -337,6 +337,7 @@
   <a class="nav-item" data-accent="posvendas" href="#pagina-pos-vendas"><span class="dot"></span>Repasse · SLA por fase e fila</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-pos-vendas-agendamentos"><span class="dot"></span>Repasse · Agendamentos</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-performance"><span class="dot"></span>Performance das filas</a>
+  <a class="nav-item" data-accent="posvendas" href="#pagina-piloto"><span class="dot"></span>Piloto Carteira</a>
   <div class="nav-label" style="margin-top:14px;">Sobre os dados</div>
   <a class="nav-item" data-accent="neutral" href="#medidas"><span class="dot"></span>Medidas</a>
   <a class="nav-item" data-accent="neutral" href="#bases-de-dados"><span class="dot"></span>Bases de dados</a>
@@ -351,6 +352,7 @@
     <a class="tab" href="#pagina-pos-vendas">Repasse · SLA</a>
     <a class="tab" href="#pagina-pos-vendas-agendamentos">Repasse · Agendamentos</a>
     <a class="tab" href="#pagina-performance">Performance das filas</a>
+    <a class="tab" href="#pagina-piloto">Piloto Carteira</a>
     <a class="tab" href="#medidas">Medidas</a>
     <a class="tab" href="#bases-de-dados">Bases de dados</a>
   </nav>
@@ -512,6 +514,32 @@
       <p class="rule-footnote">A ordem da jornada vem das listas de Status e Sínteses do Salesforce (tabela <code>dim_sintese</code>). O <strong>Distrato só deixa "Não avançou" a etapa imediatamente anterior a ele</strong>: as etapas que o Repasse já tinha completado continuam "Avançou". Todos os Repasses entram no %; o filtro "Situação na etapa", no topo, escolhe quais considerar (por exemplo, só os em andamento, para cobrar hoje).</p>
     </div>
 
+    <div class="rule-card" id="regra-referencia-sla">
+      <h3>Referência de SLA (metas por macrofase)</h3>
+      <p>Desde 21/10/2026, Limbo, Formulário, Jurídico e Contrato comparam cada Repasse com a <strong>meta dele</strong>: a meta da fase pelo modelo (Carteira ou Fila) mais os acréscimos. Os valores vêm do DW (<code>analytics.ref_metas_sla</code> e <code>analytics.ref_acrescimos_sla</code>, SDD 078) e são os mesmos da página Piloto Carteira.</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Modelo</th><th>Limbo</th><th>Formulário</th><th>Jurídico</th><th>Contrato</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Carteira</strong></td><td>5 (provisório)</td><td>3</td><td>4</td><td>5</td><td>17</td></tr>
+            <tr><td><strong>Fila</strong></td><td>5</td><td>5</td><td>6</td><td>6</td><td>22</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Acréscimos, somados uma vez por tipo (não por item):</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Acréscimo</th><th>Fase</th><th>Dias</th></tr></thead>
+          <tbody>
+            <tr><td>Agravante do piloto (1º item agravante do Repasse)</td><td>a fase em que o agravante nasceu (Formulário ou Jurídico)</td><td>+1</td></tr>
+            <tr><td>Pendência pós-assinatura</td><td>Contrato</td><td>+2</td></tr>
+            <tr><td>Seguro</td><td>Contrato</td><td>+1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="rule-footnote"><strong>Carteira</strong> = Repasse com dono (Projeto ou Atendimento) alocado a partir do início do piloto; o resto é <strong>Fila</strong>. Repasse que não está na <code>fct_repasses</code> usa a meta base da Fila. <strong>Continuam com 3 dias</strong> (ainda não redefinidos): as filas e reversões da aba SLA por fila (tabela <code>SLA referência</code>) e o prazo do agendamento de Formulário e de Contrato (DW).</p>
+    </div>
+
     <div class="note-box"><div><strong>Duas abas (out/2026):</strong> <strong>Repasse - SLA por fase</strong> (antiga "Indicadores de Performance") tem o SLA do Repasse, Limbo, Formulário, Jurídico, Contrato e FPY; <strong>Repasse - SLA por fila</strong> tem Reversão Atendimento, Reversão Crédito, Fila de Repasse, Fila de Atendimento, os 4 blocos de agendamento e os Envios à CEHOP por quem enviou (movidos da aba por fase em out/2026), com os pop-ups e marcadores (5. a 8. e 10. a 13.). As duas têm os mesmos filtros do topo; o filtro Origem fica só na aba por fase.</div></div>
 
     <div class="group-label">Indicadores (medidor + texto de apoio + botão "i")</div>
@@ -520,8 +548,8 @@
       <div class="vcard" data-accent="posvendas" data-search="Reversão Crédito SLA Em Reavaliação Limbo analista"><div class="vcard-head"><h3>% dentro do SLA - Reversão Crédito</h3><span class="pill">KPI</span></div><p>% de Repasses com no máximo <strong>3 dias</strong> na Síntese "Em Reavaliação" (análise do Crédito). Avança se for para Em Definição ou Formulário em diante. Para a <strong>Vivaz</strong>, só entram Repasses com input feito (<code>status_input</code> = "Inputada").</p><div class="fields">Medidor: <code>Reversão Crédito %</code><br>Texto: média de dias · dentro · fora<br>Data: 1ª entrada em Em Reavaliação<br>Base: <code>pv sla_reversao_credito</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="Fila de Repasse SLA Formulário Montagem Repasse Pausado Débito FGTS Emissão"><div class="vcard-head"><h3>% dentro do SLA - Fila de Repasse</h3><span class="pill">KPI</span></div><p>% de Repasses com no máximo <strong>3 dias</strong> nas Sínteses de montagem do Formulário: Emissão de Formulários (só CRe), Montagem Repasse, Pausado Repasse e Débito FGTS. O tempo em Pausado Repasse conta no SLA e aparece também separado.</p><div class="fields">Medidor: <code>Fila Repasse %</code><br>Texto: média de dias · dentro · fora<br>Data: 1ª entrada na fila<br>Base: <code>pv sla_fila_repasse</code> (trechos em <code>pv formulario_trechos</code>)</div></div>
       <div class="vcard" data-accent="posvendas" data-search="Fila de Atendimento SLA Formulário Negociação Agendamento Formulário Agendado Reagendamento"><div class="vcard-head"><h3>% dentro do SLA - Fila de Atendimento</h3><span class="pill">KPI</span></div><p>% de Repasses com no máximo <strong>3 dias</strong> nas Sínteses de atendimento do Formulário: Negociação, Agendamento Formulários, Formulário Agendado, Formulário Assinado com Pendência e Reagendamento de Formulários. Avança ao ir para Jurídico; voltar para a Fila de Repasse é "Não avançou".</p><div class="fields">Medidor: <code>Fila Atendimento %</code><br>Texto: média de dias · dentro · fora<br>Data: 1ª entrada na fila<br>Base: <code>pv sla_fila_atendimento</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="Jurídico macrofase Fila de Sistemas SLA Análise CEHOP Pausados Sistemas"><div class="vcard-head"><h3>% dentro do SLA - Jurídico</h3><span class="pill">KPI</span></div><p>Macrofase Jurídico (antes chamado "Fila de Sistemas"; renomeado em out/2026 porque mede o Status inteiro, não os itens da Fila de Sistemas). % de Repasses com no máximo <strong>3 dias</strong> no Status Jurídico (soma das passagens). Só entram Repasses com mais de 1 minuto em Jurídico. Avança ao ir para Contrato. A tabela do "i" mostra também os dias em Análise CEHOP e em Pausados Sistemas (só informativos).</p><div class="fields">Medidor: <code>SLA Jurídico %</code><br>Texto: média · mediana · dentro · fora<br>Data: 1ª entrada em Jurídico<br>Base: <code>pv sla_juridico</code></div></div>
-      <div class="vcard" data-accent="posvendas" data-search="SLA por fase Limbo Formulário Contrato Possível Venda minuta mediana"><div class="vcard-head"><h3>% dentro do SLA - Limbo / Formulário / Contrato</h3><span class="pill">KPI</span></div><p>SLA de cada fase inteira (aba SLA por fase). <strong>Limbo:</strong> tempo no Status Limbo sem a Possível Venda, que aparece no texto como "PV". <strong>Formulário:</strong> tempo no Status Formulário (Fila de Repasse + Atendimento). Só entram Repasses que ficaram <strong>mais de 1 minuto</strong> na fase (fora a Possível Venda): passagens relâmpago e Limbo só em Possível Venda ficam de fora do %, da média e da mediana. <strong>Contrato:</strong> Conforme Impedido até Contrato Agendado, contando só até o dia do agendamento da minuta. SLA de 3 dias provisório, na tabela <code>SLA referência</code>. O "i" mostra os Repasses, os dias médios por Síntese e o histórico.</p><div class="fields">Medidores: <code>Fase Limbo %</code>, <code>Fase Formulário %</code>, <code>Fase Contrato %</code><br>Texto: média · mediana · dentro · fora<br>Data: 1ª entrada na fase<br>Base: <code>pv sla_fase</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Jurídico macrofase Fila de Sistemas SLA Análise CEHOP Pausados Sistemas"><div class="vcard-head"><h3>% dentro do SLA - Jurídico</h3><span class="pill">KPI</span></div><p>Macrofase Jurídico (antes chamado "Fila de Sistemas"; renomeado em out/2026 porque mede o Status inteiro, não os itens da Fila de Sistemas). % de Repasses dentro da <a href="#regra-referencia-sla">meta do Jurídico</a> (Fila 6 dias, Carteira 4, +1 com agravante no Jurídico), somando as passagens pelo Status Jurídico. Só entram Repasses com mais de 1 minuto em Jurídico. Avança ao ir para Contrato. A tabela do "i" mostra também os dias em Análise CEHOP e em Pausados Sistemas (só informativos).</p><div class="fields">Medidor: <code>SLA Jurídico %</code><br>Texto: média · mediana · dentro · fora<br>Data: 1ª entrada em Jurídico<br>Base: <code>pv sla_juridico</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="SLA por fase Limbo Formulário Contrato Possível Venda minuta mediana"><div class="vcard-head"><h3>% dentro do SLA - Limbo / Formulário / Contrato</h3><span class="pill">KPI</span></div><p>SLA de cada fase inteira (aba SLA por fase). <strong>Limbo:</strong> tempo no Status Limbo sem a Possível Venda, que aparece no texto como "PV". <strong>Formulário:</strong> tempo no Status Formulário (Fila de Repasse + Atendimento). Só entram Repasses que ficaram <strong>mais de 1 minuto</strong> na fase (fora a Possível Venda): passagens relâmpago e Limbo só em Possível Venda ficam de fora do %, da média e da mediana. <strong>Contrato:</strong> Conforme Impedido até Contrato Agendado, contando só até o dia do agendamento da minuta. Cada Repasse é comparado com a <a href="#regra-referencia-sla">meta da sua fase</a> (modelo + acréscimos). O "i" mostra os Repasses, os dias médios por Síntese e o histórico.</p><div class="fields">Medidores: <code>Fase Limbo %</code>, <code>Fase Formulário %</code>, <code>Fase Contrato %</code><br>Texto: média · mediana · dentro · fora<br>Data: 1ª entrada na fase<br>Base: <code>pv sla_fase</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="SLA do Repasse em andamento idade fase atual"><div class="vcard-head"><h3>SLA do Repasse - em andamento</h3><span class="pill">KPI</span></div><p>Repasses ainda não assinados: quantos há em cada fase, a idade média e a mediana (criação → hoje, sem Possível Venda) e os dias médios na fase atual. Sem medidor nem faixas, por ora. Foto de agora: o Período não se aplica, a Origem sim. O "i" mostra Repasses por fase, a idade dividida por fase, a idade média por construtora e a lista em vermelho acima da meta.</p><div class="fields">Base: <code>pv sla_repasse_andamento</code></div></div>
       <div class="vcard" data-accent="posvendas" data-search="Envios CEHOP Inconforme taxa quem enviou usuário reenvio"><div class="vcard-head"><h3>Envios à CEHOP por quem enviou</h3><span class="pill">Matriz</span></div><p><strong>Na aba Repasse - SLA por fila</strong> (canto inferior esquerdo). Por pessoa que mudou a Síntese para Análise CEHOP (1º envio) ou Reenvio CEHOP: envios, Inconformes (a Síntese seguinte foi Inconforme) e taxa sobre os já respondidos. Taxa em branco abaixo do volume mínimo (10 envios, na tabela <code>SLA referência</code>). <strong>A taxa é um sinal, não prova de culpa</strong>: Inconforme pode vir de documentação do cliente ou da construtora. O "i" lista os envios. O filtro <strong>Situação na etapa</strong> funciona aqui (regra do DW, out/2026): Em andamento = aguardando retorno; Avançou = foi para Contrato ou Registro; Não avançou = Inconforme, outra Síntese do Jurídico ou volta de fase.</p><div class="fields">Data: envio (relação inativa, <code>USERELATIONSHIP</code>)<br>Base: <code>analytics fct_historico_repasse</code> com <code>is_envio_cehop_indicador</code> (SDD 070)</div></div>
       <div class="vcard" data-accent="posvendas" data-search="Média de passagens por macrofase Limbo Formulário Jurídico Contrato retrabalho"><div class="vcard-head"><h3>Média de passagens por macrofase</h3><span class="pill">Gráfico</span></div><p>Quantas vezes, em média, cada Repasse entrou em cada Status (Limbo, Formulário, Jurídico, Contrato), contando Repasses com 1ª entrada no período (desde 20/07/2026). Mais de 1 = retrabalho na macrofase. Trocar de fila dentro do mesmo Status não conta aqui.</p><div class="fields">Medida: <code>Fase Média de passagens</code><br>Base: <code>pv passagens_fase</code></div></div>
@@ -641,6 +669,63 @@
 
   <hr class="divider">
 
+  <section id="pagina-piloto">
+    <div class="page-head" data-accent="posvendas">
+      <h1>Página · Piloto Carteira <span class="page-tag" data-accent="posvendas">última aba · em construção</span></h1>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Acompanha o piloto do modelo <strong>Carteira</strong> (Repasse com dono: analista de Projeto e/ou de Atendimento) contra o modelo <strong>Fila</strong>. Cada Repasse é comparado com a <a href="#regra-referencia-sla">meta de SLA</a> do seu modelo, com acréscimos por agravante, Pendência e Seguro. Os números ainda são de teste, e a organização da página vai ser revista. Notas técnicas: <code>Credito/docs/piloto-carteira-pbi.md</code>.</p>
+    </div>
+
+    <div class="rule-card" id="regra-piloto">
+      <h3>Carteira ou Fila, e as duas formas de medir o SLA</h3>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Conceito</th><th>Regra</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Carteira</strong></td><td>Repasse alocado a um dono (Projeto ou Atendimento) a partir da data de início do piloto (<code>ref_datas</code>). Enquanto a data estiver vazia, toda alocação conta. O resto é <strong>Fila</strong>.</td></tr>
+            <tr><td><strong>Idade / SLA esperado</strong></td><td>Visão acumulada: dias em todas as macrofases em que o Repasse já entrou, contra a soma das metas dessas fases.</td></tr>
+            <tr><td><strong>Fase atual / SLA da fase</strong></td><td>Dias na macrofase em que o Repasse está agora, somando todas as passagens (voltas), contra a meta só dessa fase. Assim o Limbo, que é a fase mais pesada, não estoura o SLA das fases seguintes.</td></tr>
+            <tr><td><strong>Semáforo</strong></td><td>Repasses em andamento, pela fase atual: <span class="pill-result conclusiva">No prazo</span> até 75% da meta da fase, <span class="pill-result outros">A vencer</span> de 75% a 100%, <span class="pill-result naoconclusiva">Vencido</span> acima.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="rule-footnote">Duplicatas descartadas ficam fora. No Limbo, o tempo em Possível Venda não conta. A fase em andamento conta até a última atualização dos dados.</p>
+    </div>
+
+    <div class="group-label">Filtros do topo</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="posvendas" data-search="Período Construtora Modelo de fila Analista Projeto Atendimento filtros"><div class="vcard-head"><h3>Período · Construtora · Modelo de fila · Analista Projeto · Analista Atendimento</h3><span class="pill">Filtro</span></div><p>Filtros da página. <strong>Modelo de fila</strong> escolhe Carteira ou Fila. Os analistas filtram pelo dono do Repasse.</p><div class="fields">Colunas: <code>modelo</code>, <code>analista_projeto</code>, <code>analista_atendimento</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Macrofase filtro fase atual Limbo Formulário Jurídico Contrato"><div class="vcard-head"><h3>Macrofase</h3><span class="pill">Filtro</span></div><p>Filtra tudo, menos o gráfico "Dias por macrofase × meta". Nos cartões, no semáforo, na carteira por analista e na lista por Repasse, escolhe os Repasses pela <strong>fase atual</strong>. Na lista por macrofase, escolhe as linhas da macrofase. Assinados não têm fase atual: com o filtro ligado, os cartões de assinados ficam em 0.</p><div class="fields">Tabela: <code>Macrofase</code></div></div>
+    </div>
+
+    <div class="group-label">Cartões (Carteira · Fila)</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="posvendas" data-search="Repasses quantidade Carteira Fila cartão"><div class="vcard-head"><h3>Repasses</h3><span class="pill">KPI</span></div><p>Quantos Repasses há em cada modelo no filtro atual.</p><div class="fields">Medidas: <code>Car Repasses Carteira</code>, <code>Car Repasses Fila</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="% no prazo assinados cartão"><div class="vcard-head"><h3>% no prazo (assinados)</h3><span class="pill">KPI</span></div><p>Dos Repasses assinados, quantos ficaram dentro do SLA esperado acumulado (Idade ≤ SLA esperado).</p><div class="fields">Medidas: <code>Car % no Prazo Carteira</code>, <code>Car % no Prazo Fila</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Lead time médio meta 25 dias cartão"><div class="vcard-head"><h3>Lead time médio · meta 25 d</h3><span class="pill">KPI</span></div><p>Média de dias do SLA do Repasse dos assinados (criação → agendamento da minuta, sem Possível Venda).</p><div class="fields">Medidas: <code>Car Lead Time Médio Carteira</code>, <code>Car Lead Time Médio Fila</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Analistas distintos por Repasse cartão"><div class="vcard-head"><h3>Analistas distintos por Repasse</h3><span class="pill">KPI</span></div><p>Média de analistas diferentes que trabalharam em cada Repasse. No modelo Carteira, a expectativa é que seja menor.</p><div class="fields">Medidas: <code>Car Analistas Distintos Carteira</code>, <code>… Fila</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="% com volta de fase cartão retrabalho"><div class="vcard-head"><h3>% com volta de fase</h3><span class="pill">KPI</span></div><p>% de Repasses que voltaram para uma macrofase anterior (retrabalho).</p><div class="fields">Medidas: <code>Car % com Volta Carteira</code>, <code>… Fila</code></div></div>
+    </div>
+
+    <div class="group-label">Gráficos</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="posvendas" data-search="Dias por macrofase meta gráfico colunas linhas"><div class="vcard-head"><h3>Dias por macrofase × meta</h3><span class="pill">Gráfico</span></div><p>Colunas: média de dias em cada macrofase, por modelo, só dos Repasses que já saíram da fase. Linhas: a meta média da fase, com acréscimos. Não é afetado pelo filtro de Macrofase.</p><div class="fields">Medidas: <code>Car Dias na Fase</code>, <code>Car Meta da Fase</code> (Carteira / Fila)</div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Semáforo em andamento No prazo A vencer Vencido 100%"><div class="vcard-head"><h3>Em andamento pela fase atual</h3><span class="pill">Gráfico</span></div><p>Barras 100% por modelo com o semáforo da fase atual. Clicar num segmento filtra a página por aquele modelo e status.</p><div class="fields">Legenda: <code>semaforo_fase_atual</code> · Medida: <code>Car Em Andamento</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Carteira por analista Projeto Atendimento"><div class="vcard-head"><h3>Carteira por analista</h3><span class="pill">Gráfico</span></div><p>Repasses Carteira em andamento de cada dono, por papel (Projeto ou Atendimento).</p><div class="fields">Medida: <code>Car Carteira do Analista</code> · Tabela: <code>Carteira donos</code></div></div>
+    </div>
+
+    <div class="group-label">Lista (dois modos)</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="posvendas" data-search="Modo por Repasse botão lista em andamento Idade SLA esperado fase atual"><div class="vcard-head"><h3>Modo "Por Repasse"</h3><span class="pill">Tabela</span></div><p>Uma linha por Repasse em andamento: link, modelo, incorporadora, Síntese atual, fase atual, status na fase, <strong>Idade / SLA esperado</strong>, <strong>Fase atual / SLA da fase</strong>, % do SLA da fase, agravantes, donos e entrada na carteira. Ordenada pelo % do SLA da fase, do maior para o menor. Clicar numa linha filtra a página.</p><div class="fields">Base: <code>fct_repasses_assino</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Modo por macrofase botão histórico Situação na fase Na fase agora Já saiu"><div class="vcard-head"><h3>Modo "Por macrofase"</h3><span class="pill">Tabela</span></div><p>Histórico por macrofase: uma linha por Repasse × macrofase em que ele entrou, com os dias somando todas as passagens contra a meta da fase. Status na fase: No prazo / A vencer / Vencido para quem está na fase, Dentro / Fora para quem já saiu. O filtro <strong>Situação na fase</strong> (Na fase agora · Já saiu) só aparece neste modo.</p><div class="fields">Base: <code>Carteira fases</code></div></div>
+    </div>
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><strong>Botões de modo:</strong> "Por Repasse" e "Por macrofase", sobre a lista, trocam as tabelas pelos marcadores "Piloto - Modo por Repasse" e "Piloto - Modo por macrofase". O botão do modo ativo fica escuro. <strong>Provisório:</strong> <code>Carteira fases</code>, <code>Carteira donos</code> e as colunas do piloto são calculadas no Power BI e devem ir para o DW quando a regra estabilizar.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
   <!-- ═══════════════ MEDIDAS ═══════════════ -->
   <section id="medidas">
     <h1>Medidas</h1>
@@ -726,14 +811,14 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
         <thead><tr><th>Medida</th><th>O que calcula</th><th>Onde é usada</th></tr></thead>
         <tbody>
           <tr data-search="Total medida SLA pós-vendas"><td class="mname">&lt;X&gt; Total</td><td>Repasses da tabela do indicador, sem duplicatas; as situações vêm do filtro "Situação na etapa".</td><td><span class="used">tooltip dos medidores</span></td></tr>
-          <tr data-search="Dentro medida SLA 3 dias"><td class="mname">&lt;X&gt; Dentro</td><td>Repasses com SLA total ≤ 3 dias.<details class="dax"><summary>ver fórmula</summary><pre>VAR _sla_dias = 3   -- provisório; virá de uma tabela de SLAs
+          <tr data-search="Dentro medida SLA 3 dias"><td class="mname">&lt;X&gt; Dentro</td><td>Repasses com SLA total ≤ 3 dias (filas e reversões, tabela <code>SLA referência</code>). <strong>SLA Jurídico</strong> e <strong>Fase Limbo / Formulário / Contrato</strong>: ≤ meta de cada Repasse (<a href="#regra-referencia-sla">referência de SLA</a>), coluna <code>meta</code> da <code>pv sla_juridico</code> / <code>pv sla_fase</code>.<details class="dax"><summary>ver fórmula</summary><pre>VAR _sla_dias = 3   -- provisório; virá de uma tabela de SLAs
 RETURN CALCULATE ( [&lt;X&gt; Total], '&lt;tabela&gt;'[dias_…] &lt;= _sla_dias )</pre></details></td><td><span class="used">texto de apoio e tooltip</span></td></tr>
           <tr data-search="Fora medida SLA"><td class="mname">&lt;X&gt; Fora</td><td>Total − Dentro.</td><td><span class="used">texto de apoio e tooltip</span></td></tr>
           <tr data-search="% medida SLA medidor"><td class="mname">&lt;X&gt; %</td><td>Dentro ÷ Total.</td><td><span class="used">medidor do bloco</span></td></tr>
           <tr data-search="Média dias medida SLA"><td class="mname">&lt;X&gt; Média (dias)</td><td>Média do SLA total; para quem está em andamento, conta até agora.</td><td><span class="used">texto de apoio</span></td></tr>
           <tr data-search="Mediana dias medida SLA"><td class="mname">&lt;X&gt; Mediana (dias)</td><td>Mediana do SLA total (metade dos Repasses fica abaixo), menos sensível a casos extremos. Existe para o SLA do Repasse, a idade em andamento, as fases e o Jurídico.</td><td><span class="used">texto de apoio</span></td></tr>
           <tr data-search="Rótulo medida texto apoio"><td class="mname">&lt;X&gt; Rótulo</td><td>Texto abaixo do medidor: "4,8 dias em média · 35 dentro · 12 fora". Na aba SLA por fase, com a mediana: "média 4,8 · mediana 3,1 d · 35 dentro · 12 fora".</td><td><span class="used">cartão do bloco</span></td></tr>
-          <tr data-search="Cor medida destaque vermelho"><td class="mname">&lt;X&gt; Cor</td><td>Vermelho claro quando o SLA total passa de 3 dias.</td><td><span class="used">tabela do pop-up (formatação)</span></td></tr>
+          <tr data-search="Cor medida destaque vermelho"><td class="mname">&lt;X&gt; Cor</td><td>Vermelho claro quando o SLA total passa de 3 dias (filas e reversões) ou da meta do Repasse (Jurídico e fases).</td><td><span class="used">tabela do pop-up (formatação)</span></td></tr>
           <tr data-search="Linha Visível medida seletor Atrasados Todos"><td class="mname">&lt;X&gt; Linha Visível</td><td>1 se a linha entra nas tabelas do pop-up (sem duplicata). Leva o Repasse clicado até o histórico.</td><td><span class="used">filtro das tabelas do pop-up</span></td></tr>
           <tr data-search="FPY Denominador Numerador Inconformes medida"><td class="mname">FPY Denominador / Numerador / Inconformes / % / Rótulo</td><td>Repasses que chegaram em Contrato depois da Análise CEHOP; os que nunca tiveram Inconforme; a diferença; o %; e o texto "conformes de 1ª · com Inconforme".</td><td><span class="used">bloco FPY</span></td></tr>
           <tr data-search="SLA Repasse Dias por fase síntese medida"><td class="mname">SLA Repasse Dias por fase / por síntese</td><td>Dias médios por Repasse da faixa em cada macrofase ou Síntese, incluindo "Sem dados" e "Possível Venda (descontada)".</td><td><span class="used">pop-up do SLA do Repasse</span></td></tr>
@@ -945,11 +1030,34 @@ RETURN CALCULATE ( COUNTROWS ( dim_calendario ),
 
     <div class="tbl-card" data-search="SLA referência parâmetros parametro valor ref_parametros">
       <div class="tbl-card-head"><span class="tname-friendly">Parâmetros (SLAs, faixas, metas)</span><code class="tname-sub">SLA referência</code><span class="badge badge-util">Manual · provisória</span></div>
-      <p class="desc">Tabela digitada no Power BI com as colunas <code>parametro</code> e <code>valor</code>. Os nomes de linha e de coluna são os mesmos da <code>analytics.ref_parametros</code> do DW, que ainda não é importada. Para mudar um valor: Transformar dados › SLA referência › engrenagem do passo Fonte.</p>
+      <p class="desc">Tabela digitada no Power BI com as colunas <code>parametro</code> e <code>valor</code>. Os nomes de linha e de coluna são os mesmos da <code>analytics.ref_parametros</code> do DW, que ainda não é importada. Para mudar um valor: Transformar dados › SLA referência › engrenagem do passo Fonte. As linhas <code>Limbo (fase)</code>, <code>Formulário (fase)</code>, <code>Jurídico (fase)</code> e <code>Contrato (fase)</code> deixaram de ser usadas em 21/10/2026 (ver tabela abaixo).</p>
       <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 parâmetro</span></div>
     </div>
 
-    <footer class="doc-footer">Documentação atualizada a partir da definição do relatório em 15/10/2026 — reflete a estrutura do dashboard no momento da geração.</footer>
+    <div class="tbl-card" data-search="Carteira fases histórico macrofase Repasse piloto">
+      <div class="tbl-card-head"><span class="tname-friendly">Histórico por macrofase (piloto)</span><code class="tname-sub">Carteira fases</code><span class="badge badge-util">Calculada · provisória</span></div>
+      <p class="desc">Uma linha por Repasse × macrofase em que ele entrou, sem duplicatas: dias na fase (todas as passagens; Limbo sem Possível Venda), meta da fase com acréscimos, % da meta, situação (Na fase agora · Já saiu) e status. Liga na <code>fct_repasses_assino</code> e na <code>Macrofase</code>.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 Repasse × 1 macrofase</span></div>
+    </div>
+
+    <div class="tbl-card" data-search="Carteira donos analista Projeto Atendimento piloto">
+      <div class="tbl-card-head"><span class="tname-friendly">Donos da carteira (piloto)</span><code class="tname-sub">Carteira donos</code><span class="badge badge-util">Calculada · provisória</span></div>
+      <p class="desc">Uma linha por Repasse × dono (analista de Projeto ou de Atendimento), para contar a carteira de cada analista.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 Repasse × 1 dono</span></div>
+    </div>
+
+    <div class="tbl-card" data-search="Macrofase eixo filtro Limbo Formulário Jurídico Contrato">
+      <div class="tbl-card-head"><span class="tname-friendly">Macrofases</span><code class="tname-sub">Macrofase</code><span class="badge badge-util">Auxiliar</span></div>
+      <p class="desc">Lista fixa (Limbo, Formulário, Jurídico, Contrato) com a ordem. Eixo do gráfico "Dias por macrofase × meta" e filtro de Macrofase da página Piloto Carteira.</p>
+    </div>
+
+    <div class="tbl-card" data-search="ref_metas_sla ref_acrescimos_sla metas SLA macrofase acréscimos Pendência Seguro Carteira Fila">
+      <div class="tbl-card-head"><span class="tname-friendly">Metas de SLA por macrofase e acréscimos</span><code class="tname-sub">analytics ref_metas_sla · analytics ref_acrescimos_sla</code><span class="badge badge-util">DW</span></div>
+      <p class="desc"><code>ref_metas_sla</code>: meta em dias de cada macrofase por modelo (<code>modelo</code>, <code>macrofase</code>, <code>dias</code>). <code>ref_acrescimos_sla</code>: dias somados à meta do Contrato com Pendência pós-assinatura (+2) ou Seguro (+1). Base das colunas <code>meta_*</code> da <code>fct_repasses_assino</code> e da coluna <code>meta</code> da <code>pv sla_fase</code> e da <code>pv sla_juridico</code>. Valores em <a href="#regra-referencia-sla">Referência de SLA</a>.</p>
+      <div class="meta-chips"><span class="chip"><strong>1 linha</strong> = 1 modelo × macrofase (metas) ou 1 acréscimo</span></div>
+    </div>
+
+    <footer class="doc-footer">Documentação atualizada a partir da definição do relatório em 21/10/2026 — reflete a estrutura do dashboard no momento da geração.</footer>
   </section>
 
 </main>
