@@ -174,6 +174,12 @@
   .nav-item[data-accent="posvendas"].active { border-left-color: var(--posvendas); }
   .nav-item[data-accent="posvendas"] .dot { background: var(--posvendas); }
   .nav-item[data-accent="neutral"].active { border-left-color: var(--ink); }
+  /* página oculta no modo de leitura do PBI: cinza, vale mais que a cor da fonte */
+  .nav-item.oculta { opacity: .55; }
+  .nav-item.oculta .dot { background: transparent !important; border: 1.5px solid var(--muted); }
+  .nav-item.oculta.active { border-left-color: var(--muted) !important; }
+  .nav-legend { font-size: 11px; color: var(--muted); padding: 10px 22px 0; line-height: 1.7; }
+  .nav-legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
 
   .main { margin-left: var(--sidebar-w); flex: 1; padding: 44px 40px 100px; max-width: 900px; }
 
@@ -308,24 +314,18 @@
 
   .hidden-by-search { display: none !important; }
 
-  /* ── ABAS (uma por página do dashboard) ───────────────── */
-  .tabbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
-  .tab {
-    font-family: var(--sans); font-size: 12.5px; color: var(--muted); background: var(--card);
-    border: 1px solid var(--border); border-radius: 20px; padding: 5px 13px; cursor: pointer; text-decoration: none;
-  }
-  .tab:hover { color: var(--ink); }
-  .tab.active { color: var(--ink); font-weight: 600; border-color: var(--ink); }
+  /* ── ABAS: o menu à esquerda mostra uma página por vez ── */
   .main > section { display: none; }
   .main > section.is-active { display: block; }
   .main > hr.divider { display: none; }
   body.searching .main > section { display: block; }
-  body.searching .tabbar::after { content: "Buscando em todas as abas"; font-size: 12px; color: var(--muted); align-self: center; margin-left: 6px; }
+  body.searching .main::before { content: "Buscando em todas as abas"; display: block; font-size: 12px; color: var(--muted); margin-bottom: 16px; }
 
   footer.doc-footer { color: var(--muted); font-size: 11.5px; padding: 20px 0 0; border-top: 1px solid var(--border-soft); margin-top: 12px; }
 
   @media (max-width: 860px) {
-    .sidebar { display: none; }
+    .layout { flex-direction: column; }
+    .sidebar { position: static; width: auto; padding: 14px 0; border-right: none; border-bottom: 1px solid var(--border); }
     .main { margin-left: 0; padding: 28px 18px 80px; }
     .search-wrap { max-width: 180px; }
   }
@@ -344,12 +344,14 @@
 <aside class="sidebar" id="sidebar">
   <div class="nav-label">Páginas do dashboard</div>
   <a class="nav-item" data-accent="neutral" href="#pagina-capa"><span class="dot"></span>Capa</a>
-  <a class="nav-item" data-accent="credito" href="#pagina-credito"><span class="dot"></span>Crédito</a>
+  <a class="nav-item oculta" data-accent="credito" href="#pagina-credito" title="Oculta no modo de leitura do Power BI"><span class="dot"></span>Crédito</a>
   <a class="nav-item" data-accent="comercial" href="#pagina-comercial"><span class="dot"></span>Comercial</a>
+  <a class="nav-item" data-accent="posvendas" href="#pagina-distratos"><span class="dot"></span>Vendas que viraram distratos</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-pos-vendas"><span class="dot"></span>Repasse · SLA por fase e fila</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-pos-vendas-agendamentos"><span class="dot"></span>Repasse · Agendamentos</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-performance"><span class="dot"></span>Performance das filas</a>
   <a class="nav-item" data-accent="posvendas" href="#pagina-piloto"><span class="dot"></span>Piloto Carteira</a>
+  <div class="nav-legend">Cor = base de dados<br><i style="background:var(--credito)"></i>Análises de crédito (<code>fct_cases</code>)<br><i style="background:var(--comercial)"></i>Pastas de crédito (<code>fct_pastas_credito</code>)<br><i style="background:var(--posvendas)"></i>Repasses (<code>fct_repasses</code> e histórico)<br><i style="border:1.5px solid var(--muted)"></i>Oculta no Power BI</div>
   <div class="nav-label" style="margin-top:14px;">Sobre os dados</div>
   <a class="nav-item" data-accent="neutral" href="#medidas"><span class="dot"></span>Medidas</a>
   <a class="nav-item" data-accent="neutral" href="#bases-de-dados"><span class="dot"></span>Bases de dados</a>
@@ -357,17 +359,6 @@
 
 <main class="main" id="main">
 
-  <nav class="tabbar" id="tabbar" aria-label="Páginas da documentação">
-    <a class="tab" href="#pagina-capa">Capa</a>
-    <a class="tab" href="#pagina-credito">Crédito</a>
-    <a class="tab" href="#pagina-comercial">Comercial</a>
-    <a class="tab" href="#pagina-pos-vendas">Repasse · SLA</a>
-    <a class="tab" href="#pagina-pos-vendas-agendamentos">Repasse · Agendamentos</a>
-    <a class="tab" href="#pagina-performance">Performance das filas</a>
-    <a class="tab" href="#pagina-piloto">Piloto Carteira</a>
-    <a class="tab" href="#medidas">Medidas</a>
-    <a class="tab" href="#bases-de-dados">Bases de dados</a>
-  </nav>
 
   <!-- ═══════════════ PÁGINA CAPA ═══════════════ -->
   <section id="pagina-capa">
@@ -484,6 +475,47 @@
     </div>
 
   </section>
+
+  <!-- ═══════════════ PÁGINA VENDAS QUE VIRARAM DISTRATOS ═══════════════ -->
+  <section id="pagina-distratos">
+    <div class="page-head" data-accent="posvendas">
+      <h1>Página · Vendas que viraram distratos <span class="page-tag" data-accent="posvendas">aba 4</span></h1>
+      <p class="lede" style="margin-top:6px;margin-bottom:0;">Compara, mês a mês, as <strong>vendas</strong> (Repasses criados) com as que viraram <strong>Distrato</strong>, <strong>Possível Venda</strong> ou <strong>Possível Distrato</strong>. Cada situação aparece de duas formas: a <strong>situação atual</strong> (onde o Repasse está hoje, contado no mês de criação) e a <strong>1ª entrada</strong> (o mês em que o Repasse entrou na situação pela primeira vez). Todas as barras tiram duplicatas e processos criados à mão. Base: <code>fct_repasses_assino</code>; as medidas estão em <a href="#medidas">Medidas</a> ("Vendas do mês" a "Possíveis Distratos (1ª entrada)").</p>
+    </div>
+
+    <div class="rule-card" id="regra-distratos">
+      <h3>Situação atual × 1ª entrada</h3>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Barra</th><th>No Salesforce</th><th>No DW</th></tr></thead>
+          <tbody>
+            <tr><td>Vendas do mês</td><td>Repasses pela Data Criação de Repasse</td><td><code>fct_repasses_assino[data_criacao_repasse]</code>, sem duplicatas e sem <code>is_processo_manual</code></td></tr>
+            <tr><td>Distratos · situação atual</td><td>Repasses hoje em Status Concluído / Síntese Distrato, no mês de criação</td><td><code>is_distrato</code></td></tr>
+            <tr><td>Distratos · 1ª entrada</td><td>Mês em que o Repasse entrou em Concluído / Distrato pela 1ª vez (conta mesmo se saiu depois)</td><td><code>data_distrato</code> (SDD 065)</td></tr>
+            <tr><td>Possíveis Vendas · situação atual</td><td>Repasses hoje em Limbo / Possível Venda, no mês de criação</td><td><code>is_possivel_venda</code></td></tr>
+            <tr><td>Possíveis Vendas · 1ª entrada</td><td>1ª entrada em Limbo / Possível Venda</td><td><code>possivel_venda_entrada</code> (SDD 065)</td></tr>
+            <tr><td>Possíveis Distratos · situação atual</td><td>Repasses hoje em Limbo / Repasse Futuro A vencer com o Motivo RF contendo "Possível Distrato", no mês de criação</td><td><code>is_possivel_distrato</code></td></tr>
+            <tr><td>Possíveis Distratos · 1ª entrada</td><td>1ª vez em Limbo / Repasse Futuro A vencer com "Possível Distrato" no Motivo RF</td><td><code>possivel_distrato_entrada</code> (SDD 065)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="rule-footnote"><strong>Situação atual</strong> muda com o tempo: se o Repasse sair do Distrato, ele sai da barra. <strong>1ª entrada</strong> é acumulativa: o Repasse que avançou depois continua contado no mês da entrada.</p>
+    </div>
+
+    <div class="group-label">Gráfico</div>
+    <div class="card-grid">
+      <div class="vcard" data-accent="posvendas" data-search="Vendas que viraram Distratos gráfico barras mês situação atual 1ª entrada Possível Venda Possível Distrato"><div class="vcard-head"><h3>Vendas que viraram Distratos</h3><span class="pill">Barras</span></div><p>Barras agrupadas por mês (<code>dim_calendario[ano_mes]</code>) com as 7 medidas da tabela acima. Cores: vendas em azul escuro, Distratos em vermelho, Possíveis Vendas e Possíveis Distratos em tons de laranja e cinza.</p><div class="fields">Medidas: <code>Vendas do mês</code>, <code>Vendas distratadas</code>, <code>Distratos (1ª entrada)</code>, <code>Possíveis Vendas</code>, <code>Possíveis Vendas (1ª entrada)</code>, <code>Possíveis Distratos</code>, <code>Possíveis Distratos (1ª entrada)</code> (tabela <code>_medidas_qtd_comercial</code>)<br>Base: <code>fct_repasses_assino</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Filtros período construtora empreendimento líder segmentação"><div class="vcard-head"><h3>Filtros</h3><span class="pill">Segmentação</span></div><p>Período (ano, mês, semana, dia), Construtora, Empreendimento, Líder do Repasse e Só venda inputada (cartão ao lado).</p><div class="fields"><code>dim_calendario</code>, <code>dim_construtoras[nome]</code>, <code>dim_empreendimentos[nome]</code>, <code>fct_repasses_assino[lider]</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Só venda inputada Considera Inputada VIVAZ Demanda Mínima Status Input filtro"><div class="vcard-head"><h3>Só venda inputada</h3><span class="pill">Segmentação</span></div><p><strong>Ativo</strong>: todas as barras contam só os Repasses com o campo <strong>"Considera Inputada?" = Sim</strong> no Salesforce. <strong>Desativado</strong> (ou sem seleção): conta todos. A regra é a mesma do campo: fora da VIVAZ, sempre Sim. Na VIVAZ, Sim quando o Status Input é Inputada, ou quando o Status é Demanda Mínima e o Repasse já está em Jurídico, Contrato, Registro ou Concluído.</p><div class="fields"><strong>No DW:</strong> ainda não existe. <span class="pill" style="margin-left:4px;">Provisório</span> coluna DAX <code>fct_repasses_assino[considera_inputada]</code>, a partir de <code>nome_incorporadora</code>, <code>status_input</code>, <code>status</code>, <code>status_repasse</code> e <code>sintese_formulario</code>. Pedido ao DW: <code>Credito/docs/pbi-pedido-dw-considera-inputada.md</code><br>Tabela do filtro: <code>Só venda inputada[Modo]</code></div></div>
+      <div class="vcard" data-accent="posvendas" data-search="Última atualização Botão Home navegação"><div class="vcard-head"><h3>Última atualização e Botão Home</h3><span class="pill">Navegação</span></div><p>Mostra quando os dados do Repasse foram atualizados no DW (<code>última atualização repasse</code>) e volta para a Capa.</p></div>
+    </div>
+    <div class="note-box">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><strong>Barras de 1ª entrada só em meses com histórico completo:</strong> Distratos e Possíveis Vendas a partir de <strong>set/2026</strong> (histórico da Síntese desde 11/08/2026); Possíveis Distratos a partir de <strong>out/2026</strong> (o Motivo RF não tem Field History no Salesforce; histórico desde 30/09/2026 09:58). Antes disso a barra fica vazia.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
 
   <!-- ═══════════════ PÁGINA REPASSE - INDICADORES DE PERFORMANCE ═══════════════ -->
   <section id="pagina-pos-vendas">
@@ -792,13 +824,13 @@ RETURN CALCULATE(DIVIDE([Conclusivas], analises_concluidas, 0))</pre></details><
     "1ª Análise", [Conclusivas (primeira)]
 )</pre></details></td><td><span class="used">Comercial · gráficos "Volume por Mês/semana/dia"</span></td></tr>
           <tr data-search="Conclusivas modo medida percentual"><td class="mname">% Conclusivas (modo)</td><td>Conclusivas ÷ (Conclusivas + Não Conclusivas) no modo selecionado.</td><td><span class="used">Comercial · gráfico "% Conclusivas"</span></td></tr>
-          <tr data-search="Vendas do mês situação atual medida repasse"><td class="mname">Vendas do mês</td><td>Repasses criados no período, sem duplicatas e sem processos criados à mão (<code>is_processo_manual</code>). Data: criação do Repasse (<code>fct_repasses_assino[data_criacao_repasse]</code>).</td><td><span class="used">Repasse [em construção] · "Vendas que viraram Distratos"</span></td></tr>
-          <tr data-search="Vendas distratadas Distratos situação atual medida repasse"><td class="mname">Vendas distratadas</td><td><strong>Situação atual</strong>: Repasses que hoje estão em Concluído / Distrato, contados no mês de <strong>criação</strong> do Repasse (<code>is_distrato</code>). Todas as barras deste gráfico tiram duplicatas e processos criados à mão. Na barra aparece como "Distratos · situação atual (mês de criação)".</td><td><span class="used">Repasse [em construção] · "Vendas que viraram Distratos"</span></td></tr>
-          <tr data-search="Distratos 1ª entrada data_distrato medida repasse"><td class="mname">Distratos (1ª entrada)</td><td>Repasses que entraram em Concluído / Distrato pela <strong>1ª vez</strong> no período, contados na data dessa entrada (<code>data_distrato</code>, SDD 065). Conta mesmo que o Repasse tenha saído depois. <strong>Vazio antes de set/2026</strong>: o histórico da Síntese existe desde 11/08/2026, e mês sem histórico completo fica sem barra.</td><td><span class="used">Repasse [em construção] · "Vendas que viraram Distratos"</span></td></tr>
-          <tr data-search="Possíveis Vendas situação atual medida repasse"><td class="mname">Possíveis Vendas</td><td><strong>Situação atual</strong>: Repasses hoje em Limbo / Possível Venda, no mês de criação (<code>is_possivel_venda</code>).</td><td><span class="used">Repasse [em construção] · "Vendas que viraram Distratos"</span></td></tr>
-          <tr data-search="Possíveis Vendas 1ª entrada possivel_venda_entrada medida repasse"><td class="mname">Possíveis Vendas (1ª entrada)</td><td>1ª entrada em Limbo / Possível Venda no período (<code>possivel_venda_entrada</code>). <strong>Vazio antes de set/2026</strong> (histórico da Síntese desde 11/08/2026).</td><td><span class="used">Repasse [em construção] · "Vendas que viraram Distratos"</span></td></tr>
-          <tr data-search="Possíveis Distratos situação atual Motivo RF medida repasse"><td class="mname">Possíveis Distratos</td><td><strong>Situação atual</strong>: Repasses hoje em Limbo / Repasse Futuro A vencer com o Motivo RF contendo "Possível Distrato", no mês de criação (<code>is_possivel_distrato</code>).</td><td><span class="used">Repasse [em construção] · "Vendas que viraram Distratos"</span></td></tr>
-          <tr data-search="Possíveis Distratos 1ª entrada possivel_distrato_entrada Motivo RF medida repasse"><td class="mname">Possíveis Distratos (1ª entrada)</td><td>1ª vez em Limbo / Repasse Futuro A vencer com o Motivo RF contendo a opção "Possível Distrato" (campo de múltipla escolha) no período (<code>possivel_distrato_entrada</code>). <strong>Vazio antes de out/2026</strong>: o Motivo RF não tem Field History no Salesforce, e o histórico só existe desde 30/09/2026 09:58.</td><td><span class="used">Repasse [em construção] · "Vendas que viraram Distratos"</span></td></tr>
+          <tr data-search="Vendas do mês situação atual medida repasse"><td class="mname">Vendas do mês</td><td>Repasses criados no período, sem duplicatas e sem processos criados à mão (<code>is_processo_manual</code>). Data: criação do Repasse (<code>fct_repasses_assino[data_criacao_repasse]</code>). Respeita o filtro <a href="#pagina-distratos">"Só venda inputada"</a>.</td><td><span class="used">"Vendas que viraram Distratos"</span></td></tr>
+          <tr data-search="Vendas distratadas Distratos situação atual medida repasse"><td class="mname">Vendas distratadas</td><td><strong>Situação atual</strong>: Repasses que hoje estão em Concluído / Distrato, contados no mês de <strong>criação</strong> do Repasse (<code>is_distrato</code>). Todas as barras deste gráfico tiram duplicatas e processos criados à mão. Na barra aparece como "Distratos · situação atual (mês de criação)". Respeita o filtro <a href="#pagina-distratos">"Só venda inputada"</a>.</td><td><span class="used">"Vendas que viraram Distratos"</span></td></tr>
+          <tr data-search="Distratos 1ª entrada data_distrato medida repasse"><td class="mname">Distratos (1ª entrada)</td><td>Repasses que entraram em Concluído / Distrato pela <strong>1ª vez</strong> no período, contados na data dessa entrada (<code>data_distrato</code>, SDD 065). Conta mesmo que o Repasse tenha saído depois. <strong>Vazio antes de set/2026</strong>: o histórico da Síntese existe desde 11/08/2026, e mês sem histórico completo fica sem barra. Respeita o filtro <a href="#pagina-distratos">"Só venda inputada"</a>.</td><td><span class="used">"Vendas que viraram Distratos"</span></td></tr>
+          <tr data-search="Possíveis Vendas situação atual medida repasse"><td class="mname">Possíveis Vendas</td><td><strong>Situação atual</strong>: Repasses hoje em Limbo / Possível Venda, no mês de criação (<code>is_possivel_venda</code>). Respeita o filtro <a href="#pagina-distratos">"Só venda inputada"</a>.</td><td><span class="used">"Vendas que viraram Distratos"</span></td></tr>
+          <tr data-search="Possíveis Vendas 1ª entrada possivel_venda_entrada medida repasse"><td class="mname">Possíveis Vendas (1ª entrada)</td><td>1ª entrada em Limbo / Possível Venda no período (<code>possivel_venda_entrada</code>). <strong>Vazio antes de set/2026</strong> (histórico da Síntese desde 11/08/2026). Respeita o filtro <a href="#pagina-distratos">"Só venda inputada"</a>.</td><td><span class="used">"Vendas que viraram Distratos"</span></td></tr>
+          <tr data-search="Possíveis Distratos situação atual Motivo RF medida repasse"><td class="mname">Possíveis Distratos</td><td><strong>Situação atual</strong>: Repasses hoje em Limbo / Repasse Futuro A vencer com o Motivo RF contendo "Possível Distrato", no mês de criação (<code>is_possivel_distrato</code>). Respeita o filtro <a href="#pagina-distratos">"Só venda inputada"</a>.</td><td><span class="used">"Vendas que viraram Distratos"</span></td></tr>
+          <tr data-search="Possíveis Distratos 1ª entrada possivel_distrato_entrada Motivo RF medida repasse"><td class="mname">Possíveis Distratos (1ª entrada)</td><td>1ª vez em Limbo / Repasse Futuro A vencer com o Motivo RF contendo a opção "Possível Distrato" (campo de múltipla escolha) no período (<code>possivel_distrato_entrada</code>). <strong>Vazio antes de out/2026</strong>: o Motivo RF não tem Field History no Salesforce, e o histórico só existe desde 30/09/2026 09:58. Respeita o filtro <a href="#pagina-distratos">"Só venda inputada"</a>.</td><td><span class="used">"Vendas que viraram Distratos"</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1088,7 +1120,7 @@ RETURN CALCULATE ( COUNTROWS ( dim_calendario ),
 (function () {
   // Abas: uma seção por vez; o hash da URL escolhe a aba (os links internos também funcionam).
   var panels = Array.prototype.slice.call(document.querySelectorAll('.main > section'));
-  var tabLinks = Array.prototype.slice.call(document.querySelectorAll('.tab, .nav-item'));
+  var tabLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-item'));
   function show(hash) {
     var id = (hash || '').replace('#', '');
     var target = id ? document.getElementById(id) : null;
